@@ -16,6 +16,37 @@ var TextureAtlasBG = {
 	frameY 	在画布上放置图像的 y 坐标位置。
 	frameWidth 	可选。要使用的图像的宽度。（伸展或缩小图像）
 	frameHeight 	可选。要使用的图像的高度。（伸展或缩小图像）
+	
+{"frames": [
+
+{
+	"filename": "bao_01.png",
+	"frame": {"x":191,"y":2,"w":50,"h":73},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":73},
+	"sourceSize": {"w":50,"h":73}
+},
+{
+	"filename": "bao_02.png",
+	"frame": {"x":66,"y":184,"w":51,"h":70},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":51,"h":70},
+	"sourceSize": {"w":51,"h":70}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "texture.png",
+	"format": "RGBA8888",
+	"size": {"w":256,"h":256},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1e608a9fb785c2b5f181a834f3aec80e$"
+}
+}
+
+
 */
 
 
@@ -225,7 +256,41 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
                   */
               }
           }
-      }
+      },
+      /*异步传输json strData的数据如：name=value&name1=value1&name2=value2*/
+			_loadJson = function(method, url, strData, f, async) {
+			    if (typeof (async) == "undefined") async = true;
+			    var xr;
+			     try {
+		        xr = new XMLHttpRequest();
+		      } 
+		      catch (e) {
+		        var XmlHttpVersions = new Array("MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP");
+		        for (var i = 0; i < XmlHttpVersions.length && !xmlHttp; i++) {
+		          try {
+		            xr = new ActiveXObject(XmlHttpVersions[i]);
+		          } 
+		          catch (e) {
+		          	console.log(e);
+		          }
+		        }
+		      }
+			    xr.onreadystatechange = function () {
+			        if (this.readyState == 4) {
+			            if (this.status == 200 && this.responseText != "") {
+			                if (typeof (f) === 'function')
+			                    f(JSON.parse(this.responseText));
+			            } else {
+			                if (typeof (f) === 'function')
+			                    f(null);
+			            }
+			        }
+			    }
+			    xr.open(method, url, async);
+			    if (method.toLowerCase() == 'post')
+			        xr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			    xr.send(strData);
+			};
   };
   
   _stage.add = function (obj) {
@@ -417,8 +482,13 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this._framesLength = 0;
 		this._frameIndex = 0;
 
-		var _this = this;
-	
+		var _this = this,
+		_textureAtlas,
+		_textureImage,
+		_textureFramesLength,
+		_textureFrameIndex = 0,
+		_textureFrameTime = 1;
+		
 		/*执行*/
 		this.addFrame(function(c2d){
 			_drawBGBorder.call(_this,c2d);
@@ -428,6 +498,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			
 			_this._frameTime = (_this._frameTime >= _this.frameTime)?0:_this._frameTime+1;
 		});
+		
 		
 		var _drawBGBorder = function(){
 			if(_this.borderWidth > 0 && _this.borderColor && _this.borderColor != ''){
@@ -456,8 +527,6 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				c2d.restore();
 			}
 		},
-		
-		
 		/*画Texture*/
 		_drawTexture =function(c2d){
 			if(this.TextureAtlasLength <= 0)
@@ -468,6 +537,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			c2d.rotate(this.rotate);
 			c2d.scale(this.scaleX,this.scaleY);
 			c2d.globalAlpha = this.alpha;
+			
 			
 			if(this.TextureAtlas){
 				this.frameX = this.TextureAtlas.SubTexture[this.index].frameX;
@@ -506,9 +576,22 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 					this.index = this.loop?0:this.TextureAtlasLength-1;
 				}
 			}
-		},
+		};
+		this.loadTextureJson = function(url){
+			_loadJson('get',url,'',function(data){
+				_textureAtlas = data;
+				_textureImage = new Image();
+				_textureImage.src = data.meta.image;
+				_textureFramesLength = data.frames.length;
+			});
+		};
+		this.setTextureJson = function(json){
+			_textureAtlas = json;
+			_textImage = new Image();
+			_textImage.src = json.meta.image;
+			_textureFramesLength = json.frames.length;
+		};
   };
-  
   _spirit.prototype = {
   	
 		
@@ -635,10 +718,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				this.animate(i,obj[i],time,callback);
 		},
 		animate:function(atr,value,time,callback){
-	
-			
 			var length = 10;
-			
 			var step = value >= this[atr]?JF.stage.defAttrVal[atr]:-JF.stage.defAttrVal[atr];
 	
 			if(time){
@@ -706,8 +786,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 					this._storeEvents.splice(i,1);
 				
 		}
-  }   = _spirit;
-  
+  }
   /*声音组件*/
   var _sound = jf.Sound = function(soundUrl){
   	this.audio = document.createElement('audio');
@@ -735,6 +814,5 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			return this.audio;
 		}
 	}
-
-  
+	
 })(JF);
