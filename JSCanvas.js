@@ -421,8 +421,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 	
 		/*执行*/
 		this.addFrame(function(c2d){
-			_drawBGBorder(c2d);
-			_drawTexture(c2d);
+			_drawBGBorder.call(_this,c2d);
+			_drawTexture.call(_this,c2d);
+			
 			_this._drawFrame(c2d);
 			
 			_this._frameTime = (_this._frameTime >= _this.frameTime)?0:_this._frameTime+1;
@@ -444,7 +445,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				c2d.strokeStyle = this.borderColor;
 				c2d.fillStyle = this.backgroundColor;
 				if(this.radius > 0){
-				    c2d.arc(this.getCX(), this.getCY(), this.radius, 0, 2 * Math.PI);
+				    c2d.arc(this._centerx, this._centerx, this.radius, 0, 2 * Math.PI);
 				} else {
 				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
 				}
@@ -454,13 +455,11 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				c2d.closePath();
 				c2d.restore();
 			}
-		}
-  };
-  
-  _spirit.prototype = {
-  	
+		},
+		
+		
 		/*画Texture*/
-		_drawTexture:function(c2d){
+		_drawTexture =function(c2d){
 			if(this.TextureAtlasLength <= 0)
 				return;
 			c2d.save();
@@ -508,6 +507,11 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				}
 			}
 		},
+  };
+  
+  _spirit.prototype = {
+  	
+		
 		/*画frame
 		_drawFrame:function(c2d){
 			if(this._framesLength <= 0)
