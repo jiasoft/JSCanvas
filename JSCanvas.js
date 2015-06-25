@@ -1,22 +1,5 @@
-﻿/*
-var TextureAtlasBG = {
-		imagePath:"rs/a.jpg",
-		SubTexture:[
-			{name:'bg1',x:0,y:0,width:1040,height:700,frameX:0,frameY:0,frameWidth:1040,frameHeight:700}
-		]
-	};
-	参数值
-	参数 	描述
-	imagePath 	规定要使用的图像、画布或视频。
-	x 	可选。开始剪切的 x 坐标位置。
-	y 	可选。开始剪切的 y 坐标位置。
-	width 	可选。被剪切图像的宽度。
-	height 	可选。被剪切图像的高度。
-	frameX 	在画布上放置图像的 x 坐标位置。
-	frameY 	在画布上放置图像的 y 坐标位置。
-	frameWidth 	可选。要使用的图像的宽度。（伸展或缩小图像）
-	frameHeight 	可选。要使用的图像的高度。（伸展或缩小图像）
-	
+﻿/* 用 texturepacker 生成下面的json
+_textureAtlas=	
 {"frames": [
 
 {
@@ -45,8 +28,6 @@ var TextureAtlasBG = {
 	"smartupdate": "$TexturePacker:SmartUpdate:1e608a9fb785c2b5f181a834f3aec80e$"
 }
 }
-
-
 */
 
 
@@ -63,7 +44,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			  window.webkitRequestAnimationFrame ||
 			  window.mozRequestAnimationFrame    ||
 			  function( callback ){
-				window.setTimeout(callback, 1000 / 60);
+					window.setTimeout(callback, 1000 / 60);
 			  };
 	})(),
 	_offset = function(elem){
@@ -75,9 +56,10 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		};
             
 	},
-	_child: [],
-  _running: false,
-  _storeEvents: [],
+	_child = [],
+  _running = false,
+  _storeEvents = [],
+  //_defJumpAttrVal = { x: 10, y: 10, alpha: 0.1, rotate: Math.PI / 180, scaleX: 0.1, scaleY: 0.1 },
   _callFrames = function () {
       for (var i = this.length - 1; i >= 0; i--)
           this[i].call(null,c2d);
@@ -85,7 +67,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _callEvent = function (obj) {
       if (this instanceof Array) {
           for (var i = 0; i < this.length; i++) {
-              this[i](obj);
+              this[i].call(null,obj);
           }
       }
   },
@@ -179,11 +161,11 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
           return;
       _c2d.clearRect(0, 0, this.width, this.height);
 
-      for (var i = 0; i < ._child.length; i++) {
+      for (var i = 0; i < _child.length; i++) {
           if (_child[i].hide)
               continue;
           if (_child[i])
-              _callFrames.call(_child[i]._storeRuns, _c2d);
+              _child[i].callFrame(c2d);
           //for(var j = 0;j < this._child[i]._storeRuns.length;j++)
           //	this._child[i]._storeRuns[j](_c2d);
       }
@@ -256,43 +238,43 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
                   */
               }
           }
-      },
-      /*异步传输json strData的数据如：name=value&name1=value1&name2=value2*/
-			_loadJson = function(method, url, strData, f, async) {
-			    if (typeof (async) == "undefined") async = true;
-			    var xr;
-			     try {
-		        xr = new XMLHttpRequest();
-		      } 
-		      catch (e) {
-		        var XmlHttpVersions = new Array("MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP");
-		        for (var i = 0; i < XmlHttpVersions.length && !xmlHttp; i++) {
-		          try {
-		            xr = new ActiveXObject(XmlHttpVersions[i]);
-		          } 
-		          catch (e) {
-		          	console.log(e);
-		          }
-		        }
-		      }
-			    xr.onreadystatechange = function () {
-			        if (this.readyState == 4) {
-			            if (this.status == 200 && this.responseText != "") {
-			                if (typeof (f) === 'function')
-			                    f(JSON.parse(this.responseText));
-			            } else {
-			                if (typeof (f) === 'function')
-			                    f(null);
-			            }
-			        }
-			    }
-			    xr.open(method, url, async);
-			    if (method.toLowerCase() == 'post')
-			        xr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			    xr.send(strData);
-			};
-  };
-  
+      }
+      
+  },
+  /*异步传输json strData的数据如：name=value&name1=value1&name2=value2*/
+	_loadJson = function(method, url, strData, f, async) {
+	    if (typeof (async) == "undefined") async = true;
+	    var xr;
+	     try {
+        xr = new XMLHttpRequest();
+      } 
+      catch (e) {
+        var XmlHttpVersions = new Array("MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP");
+        for (var i = 0; i < XmlHttpVersions.length && !xmlHttp; i++) {
+          try {
+            xr = new ActiveXObject(XmlHttpVersions[i]);
+          } 
+          catch (e) {
+          	console.log(e);
+          }
+        }
+      }
+	    xr.onreadystatechange = function () {
+	        if (this.readyState == 4) {
+	            if (this.status == 200 && this.responseText != "") {
+	                if (typeof (f) === 'function')
+	                    f(JSON.parse(this.responseText));
+	            } else {
+	                if (typeof (f) === 'function')
+	                    f(null);
+	            }
+	        }
+	    }
+	    xr.open(method, url, async);
+	    if (method.toLowerCase() == 'post')
+	        xr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	    xr.send(strData);
+	};
   _stage.add = function (obj) {
       obj.index = 0;
       _child.push(obj);
@@ -365,7 +347,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       _c2d.save();
       _InitSysEvent(ele);
        /******健盘控制器******/
-      this.addEvent(function (obj) {
+      this.on(function (obj) {
 
           if (obj.type == "key.down") {
 
@@ -401,10 +383,10 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
                       _this.controller.right = false;
                       break;
                   case 74:
-                      _this.callEvent.call(_this._storeEvents, { type: 'action.jump', keyCode: 74 });
+                      _this.callEvent.call(_storeEvents, { type: 'action.jump', keyCode: 74 });
                       break;
                   case 75:
-                      _this.callEvent.call(_this._storeEvents, { type: 'action.kill', keyCode: 75 });
+                      _this.callEvent.call(_storeEvents, { type: 'action.kill', keyCode: 75 });
                       break;
               }
           }
@@ -413,10 +395,10 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   }
 
     /*系统事件*/
-  _stage.addEvent = function (callback) {
+  _stage.on = function (callback) {
       _storeEvents.push(callback);
   }
-  _stage.removeEvent =  function (callback) {
+  _stage.unOn =  function (callback) {
 
       for (var i = 0; i < _storeEvents.length; i++)
           if (_storeEvents[i] == callback)
@@ -429,7 +411,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       left: false,
       right: false
   }
-  _stage.defAttrVal = { x: 10, y: 10, alpha: 0.1, rotate: Math.PI / 180, scaleX: 0.1, scaleY: 0.1 };
+
   _stage.tipSpirit = function (pos) {
       var leng = _child.length;
       for (var i = leng - 1; i >= 0; i--) {
@@ -442,10 +424,23 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       }
       return null;
   };
-  
+  get _stage.child(){return _child;};
   
   /*精灵组件*/
   var _spirit = jf.Spirit = function(id,x,y,w,h,r){
+  	var _this = this,
+		_textureAtlas,
+		_textureImage,
+		_textureFramesLength,
+		_textureFrameIndex = 0,
+		_textureFrameTime = 0,
+		_tmpTextureFrameTime = 0,
+		_centerX = this.x+this.width/2,
+		_centerY = this.y+this.height/2,
+		_frames = [],
+		_child = [],
+		_storeEvents = [];
+		
   	this.id = id||Math.floor(Math.random()*10000000);
 		this.x = x||0; 
 		this.y = y||0; 
@@ -458,125 +453,84 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this.alpha = 1;
 		this.hide = false;
 		this.canCollision = false;
-		this.loop = -1;
+		this.loop = true;
 		this.backgroundColor="";
 		this.borderWidth =0;
 		this.borderColor = "";
+		this.shadowOffsetX = 0;
+		this.shadowOffsetY = 0;
+		this.shadowBlur = 0;
+		this.shadowColor = 'rgba(0,0,0,0)';
 		
-		this._frames = [];
-		this._child = [];
-		this._storeEvents = [];
-		this._centerX = this.x+this.width/2;
-		this._centerY = this.y+this.height/2;
-		
-		this.frameX = 0;
-		this.frameY = 0;
-		
-		
-		this.frameTime=15;
-		this._frameTime=0;
-		this.index=0;
-		this.TextureAtlasLength = 0;
-		this.TextureAtlas = null;
-		
-		this._framesLength = 0;
-		this._frameIndex = 0;
-
-		var _this = this,
-		_textureAtlas,
-		_textureImage,
-		_textureFramesLength,
-		_textureFrameIndex = 0,
-		_textureFrameTime = 1;
-		
-		/*执行*/
-		this.addFrame(function(c2d){
-			_drawBGBorder.call(_this,c2d);
-			_drawTexture.call(_this,c2d);
-			
-			_this._drawFrame(c2d);
-			
-			_this._frameTime = (_this._frameTime >= _this.frameTime)?0:_this._frameTime+1;
-		});
-		
-		
-		var _drawBGBorder = function(){
+		var _initSpirit = function(c2d,callback){
 			if(_this.borderWidth > 0 && _this.borderColor && _this.borderColor != ''){
 				c2d.save();
 				c2d.beginPath();
-				c2d.translate(this._centerx, this._centerY);
+				c2d.translate(_centerx, _centerY);
 				c2d.rotate(this.rotate);
 				c2d.scale(this.scaleX,this.scaleY);
 				c2d.globalAlpha = this.alpha;
-				c2d.shadowOffsetX = 0;
-				c2d.shadowOffsetY = 0;
-				c2d.shadowBlur = 3;
-				c2d.shadowColor ='rgba(0,0,0,0.5)';
+				c2d.shadowOffsetX = this.shadowOffsetX;
+				c2d.shadowOffsetY = this.shadowOffsetY;
+				c2d.shadowBlur = this.shadowBlur;
+				c2d.shadowColor =this.shadowColor;
 				c2d.lineWidth = this.borderWidth;
 				c2d.strokeStyle = this.borderColor;
 				c2d.fillStyle = this.backgroundColor;
 				if(this.radius > 0){
-				    c2d.arc(this._centerx, this._centerx, this.radius, 0, 2 * Math.PI);
+				    c2d.arc(_centerx, _centerx, this.radius, 0, 2 * Math.PI);
 				} else {
 				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
 				}
 				c2d.stroke();
 				if(this.backgroundColor && this.backgroundColor != '')
 					c2d.fill();
+				callback.call();
 				c2d.closePath();
 				c2d.restore();
 			}
 		},
 		/*画Texture*/
 		_drawTexture =function(c2d){
-			if(this.TextureAtlasLength <= 0)
+			if(_textureFramesLength <= 0)
 				return;
+				
 			c2d.save();
 			c2d.beginPath();
-			c2d.translate(this.getCX(), this.getCY());
-			c2d.rotate(this.rotate);
-			c2d.scale(this.scaleX,this.scaleY);
-			c2d.globalAlpha = this.alpha;
 			
-			
-			if(this.TextureAtlas){
-				this.frameX = this.TextureAtlas.SubTexture[this.index].frameX;
-				this.frameY = this.TextureAtlas.SubTexture[this.index].frameY;
-				c2d.drawImage(this.TextureAtlas.image,
-												this.TextureAtlas.SubTexture[this.index].x,
-												this.TextureAtlas.SubTexture[this.index].y,
-												this.TextureAtlas.SubTexture[this.index].width,
-												this.TextureAtlas.SubTexture[this.index].height,
-												this.TextureAtlas.SubTexture[this.index].frameX - this.width/2,
-												this.TextureAtlas.SubTexture[this.index].frameY - this.height/2,
-												this.TextureAtlas.SubTexture[this.index].frameWidth,
-												this.TextureAtlas.SubTexture[this.index].frameHeight);
-												
-			}
+			c2d.drawImage(_textureImage,
+												_textureAtlas.frames[_textureFrameIndex].frame.x,
+												_textureAtlas.frames[_textureFrameIndex].frame.y,
+												_textureAtlas.frames[_textureFrameIndex].frame.w,
+												_textureAtlas.frames[_textureFrameIndex].frame.h,
+												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.x,
+												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.y,
+												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.w,
+												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.h);
 			c2d.closePath();
 			c2d.restore();
 			
-			if(!this.loop){
-				return;
-			}
-			if(this.index == 0 && this._frameTime == 0)
-				JF.stage.callEvent.call(this._storeEvents,{type:'run.start',curObj:this});
+			if(_textureFrameIndex == 0 && _tmpTextureFrameTime == 0)
+				_callEvent.call(_storeEvents,{type:'drawtexture.start',spirit:this});
 			
-			if(this.index == (this.TextureAtlasLength -1) && this._frameTime == this.frameTime)
-				JF.stage.callEvent.call(this._storeEvents,{type:'run.end',curObj:this});
+			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameTime == _textureFrameTime)
+				_callEvent.call(_storeEvents,{type:'drawtexture.end',spirit:this});
 			
-			if(this._frameTime == 0)
-				JF.stage.callEvent.call(this._storeEvents,{type:'run.each',curObj:this});
+			if(_textureFrameTime == 0)
+				_callEvent.call(_storeEvents,{type:'drawtexture.each',spirit:this});
 				
 				
-			if(this._frameTime == this.frameTime){
-				this.index ++;
-				if(this.index >= this.TextureAtlasLength){
-					this.loop--;
-					this.index = this.loop?0:this.TextureAtlasLength-1;
-				}
+			/*换帧 */
+			if(_tmpTextureFrameTime == 0){
+				if(this.loop)
+					_textureFrameIndex = _textureFrameIndex >= (_textureFramesLength - 1)?0:_textureFrameIndex+1;
+				else
+					_textureFrameIndex = _textureFrameIndex >= (_textureFramesLength - 1)?_textureFramesLength -1 : _textureFrameIndex+1;
 			}
+			_tmpTextureFrameTime = _tmpTextureFrameTime < _textureFrameTime ? _textureFrameTime+1:0;
+			
 		};
+		
 		this.loadTextureJson = function(url){
 			_loadJson('get',url,'',function(data){
 				_textureAtlas = data;
@@ -591,200 +545,124 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			_textImage.src = json.meta.image;
 			_textureFramesLength = json.frames.length;
 		};
+		this.addFrame = function(callback){
+			if(typeof(callback) == 'function'){
+				_frames.push(callback);
+			}
+		};
+		this.removeFrame =function(callback){
+			for(var i = 0;i < _frames.length;i++){
+				if(_frames[i] == callback){
+					_frames.splice(i,1);
+				}
+			}
+		};
+		this.add = function(spi){
+			_child.push(spi);
+		};
+		this.remove =function(spi){
+			for(var i = 0;i < _child.length;i++){
+				if(_child[i].id == spi.id)
+					_child.splice(i,1);
+			}
+		};
+		this.indexOf =function(spi){
+			if(_child.indexOf)
+				return _child.indexOf(spi);
+			for(var i =0;i < _child.length;i++)
+				if(this._child[i] === spi)
+					return i;
+			return -1;
+		};
+		this.on =function(callback){
+			_storeEvents.push(callback);
+		};
+		this.unOn=function(callback){
+			
+			for(var i = 0; i < _storeEvents.length;i++)
+				if(_storeEvents[i] == callback)
+					_storeEvents.splice(i,1);
+				
+		};
+		
+		get this.textureFrameTime(){return _textureFrameTime};
+		set this.textureFrameTime(val){_textureFrameTime=val};
+		get this.textureFrames(){return _textureAtlas.frames};
+		get centerX(){return _centerx;};
+		get centerY(){return _centery;};
+		get frames(){return _frames;};
+		get child(){return _child;};
+		/*执行*/
+		this.addFrame(function(c2d){
+			_initSpirit.call(_this,c2d,function(){
+				_drawTexture.call(_this,c2d);
+			});
+			
+		});
   };
   _spirit.prototype = {
-  	
-		
-		/*画frame
-		_drawFrame:function(c2d){
-			if(this._framesLength <= 0)
-				return;
-			c2d.save();
-			c2d.beginPath();
-			c2d.translate(this.x,this.y);
-			c2d.rotate(this.rotate);
-			c2d.scale(this.scaleX,this.scaleY);
-			c2d.globalAlpha = this.alpha;
-			
-			this._frames[this._frameIndex](c2d);
-			
-			c2d.closePath();
-			c2d.restore();
-		
-			if(this._frameIndex == 0 && this._frameTime == 0)
-				JF.stage.callEvent.call(this._storeEvents,{type:'run.frame.start',curObj:this});
-			
-			if(this._frameIndex == (this._framesLength -1) && this._frameTime == this.frameTime)
-				JF.stage.callEvent.call(this._storeEvents,{type:'run.frame.end',curObj:this});
-			
-			if(this._frameTime == 0)
-				JF.stage.callEvent.call(this._storeEvents,{type:'run.frame.each',curObj:this});
-				
-			if(this._frameTime == this.frameTime){
-				this._frameIndex++;
-				if(this._frameIndex >= this._framesLength){
-					this._frameIndex = this.loop?0:this._framesLength-1;
-					
-				}
-			}
-		},
-		*/
-		/*画孩子
-		_drwawChild:function(c2d){
-			var len = this._child.length;
-			if(len <= 0)
-				return;
-			c2d.save();
-			c2d.beginPath();
-			c2d.translate(this.x,this.y);
-			c2d.rotate(this.rotate);
-			c2d.scale(this.scaleX,this.scaleY);
-			c2d.globalAlpha = this.alpha;
-			for(var i = 0;i < len;i++){
-				if(this._child[i].hide)
-					continue;
-				if(this._child[i])	
-					JF.stage.callRuns.call(this._child[i]._storeRuns,c2d);
-				//var l = this._child[i]._storeRuns.length;
-				//for(var j = 0;j < l;j++)
-				//	this._child[i]._storeRuns[j](JF.stage.c2d);
-			}
-			c2d.closePath();
-			c2d.restore();
-		},
-		*/
-		get centerX(){
-			return this._centerx;
-		},
-		set centerX(val){
-			this._centerx = val;
-		},
-		get centerY(){
-			return this._centery;
-		},
-		set centerY(val){
-			this._centery = val;
-		},
-		add:function(spi){
-			obj.index = 0;
-			this._child.push(spi);
-		},
-		remove:function(spi){
-			for(var i = 0;i < this._child.length;i++){
-				if(this._child[i].id == spi.id)
-					this._child.splice(i,1);
-			}
-		},
-		addFrame:function(callback){
-			if(typeof(callback) == 'function'){
-				this._frames.push(callback);
-				this._framesLength++;
-			}
-		},
-		removeFrame:function(callback){
-			for(var i = 0;i < this._frames.length;i++){
-				if(this._frames[i] == callback){
-					this._frames.splice(i,1);
-					this._framesLength--;
-				}
-			}
-		},
-		setTexture:function(textureobj){
-			textureobj.image = new Image();
-			textureobj.image.src = textureobj.imagePath;
-			this.TextureAtlas = textureobj;
-			this.TextureAtlasLength = this.TextureAtlas.SubTexture.length;
-			for(var i = 0;i < this.TextureAtlasLength;i++){
-				if(this.TextureAtlas.SubTexture[i].frameX == undefined)
-					this.TextureAtlas.SubTexture[i].frameX = 0;
-				if(this.TextureAtlas.SubTexture[i].frameY == undefined)
-					this.TextureAtlas.SubTexture[i].frameY = 0;
-				if(this.TextureAtlas.SubTexture[i].frameWidth == undefined)
-					this.TextureAtlas.SubTexture[i].frameWidth = this.TextureAtlas.SubTexture[i].width;
-				if(this.TextureAtlas.SubTexture[i].frameHeight == undefined)
-					this.TextureAtlas.SubTexture[i].frameHeight = this.TextureAtlas.SubTexture[i].height;
-			}
-			if(this.TextureAtlasLength > 0){
-				this.width = this.width?this.width:this.TextureAtlas.SubTexture[0].frameWidth;
-				this.height = this.height?this.height:this.TextureAtlas.SubTexture[0].frameHeight;
-			}
-		},
-		getSubTexture:function(index){
-				return this.TextureAtlas && this.TextureAtlas.SubTexture[index]?this.TextureAtlas.SubTexture[index]:null;
-		},
 		animates:function(obj,time,callback){
 			
 			for(var i in obj)
 				this.animate(i,obj[i],time,callback);
 		},
-		animate:function(atr,value,time,callback){
-			var length = 10;
-			var step = value >= this[atr]?JF.stage.defAttrVal[atr]:-JF.stage.defAttrVal[atr];
-	
-			if(time){
-				length = time/(JF.stage.rtime*2);
-				step = (value - this[atr])/length;
-			}
+		animate:function(atr,value,frameCount,callback){
+			frameCount = frameCount||20;
+			var _frameIndex = 0;
+			//var step = value >= this[atr]?_defJumpAttrVal[atr]:-_defJumpAttrVal[atr];
+			var step = (value - this[atr])/frameCount;
 			
-			if(step == 0)
+			
+			if(Math.abs(step) <=  0.001)
 				return;
 			var _this = this;
 			var _changatr = function(){
 				_this[atr] +=step;
-				if(step > 0){
-					if(_this[atr] >=  value){
-						_this[atr] = value;
-						_this.unrun(_changatr);
-						
-						if(typeof(callback) == 'function')
-							callback(atr);
-						return;
-					}
-				}
-				else{
+				_frameIndex++;
+				if(_frameIndex >= frameCount){
 					if(_this[atr] <=  value){
 						_this[atr] = value;
-						_this.unrun(_changatr);
+						_this.removeFrame(_changatr);
 						if(typeof(callback) == 'function')
 							callback();
 						return;
 					}
 				}
 			};
-			this.run(_changatr);
-			return _changatr;
+			this.addFrame(_changatr);
+			
 		},
-		topLate:function(index){
-			var len = this._child.length;
+		
+		hideChild:function(index){
+			var len = this.child.length;
 			for(var i = 0;i < len;i++){
-				this._child[i].hide = (i==index?true:false);
+				this.child[i].hide = (i==index?true:false);
 			}
 		},
-		indexOf:function(spi){
-			if(this._child.indexOf)
-				return this._child.indexOf(spi);
-			for(var i =0;i < this._child.length;i++)
-				if(this._child[i] === spi)
-					return i;
-			return -1;
-		},
-		unanimate:function(animfun){
-			this.unrun(animfun);
-		},
-		setBGBorder:function(borderWidth,borderColor,backgroundColor){
-			this.backgroundColor = backgroundColor;
-			this.borderWidth = borderWidth;
-			this.borderColor = borderColor;
-		},
-		addEvent:function(callback){
-			this._storeEvents.push(callback);
-		},
-		removeEvent:function(callback){
-			
-			for(var i = 0; i < this._storeEvents.length;i++)
-				if(this._storeEvents[i] == callback)
-					this._storeEvents.splice(i,1);
-				
+		callFrame:function(c2d){
+			c2d.save();
+			c2d.beginPath();
+			c2d.translate(_centerx, _centerY);
+			c2d.rotate(this.rotate);
+			c2d.scale(this.scaleX,this.scaleY);
+			c2d.globalAlpha = this.alpha;
+			c2d.shadowOffsetX = this.shadowOffsetX;
+			c2d.shadowOffsetY = this.shadowOffsetY;
+			c2d.shadowBlur = this.shadowBlur;
+			c2d.shadowColor =this.shadowColor;
+			c2d.lineWidth = this.borderWidth;
+			c2d.strokeStyle = this.borderColor;
+			c2d.fillStyle = this.backgroundColor;
+			_callFrames.call(this.frames,c2d);
+			var len = this.child.length;
+			for (var i = 0; i < len; i++) {
+        if (this.child[i].hide)
+            continue;
+        if (this.child[i])
+            this.child.callFrame();
+    	}
+    	c2d.closePath();
+			c2d.restore();
 		}
   }
   /*声音组件*/

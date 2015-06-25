@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "fs_01.png",
+	"frame": {"x":39,"y":2,"w":35,"h":81},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":81},
+	"sourceSize": {"w":35,"h":81}
+},
+{
+	"filename": "fs_02.png",
+	"frame": {"x":2,"y":2,"w":35,"h":82},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":82},
+	"sourceSize": {"w":35,"h":82}
+},
+{
+	"filename": "fs_03.png",
+	"frame": {"x":39,"y":2,"w":35,"h":81},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":81},
+	"sourceSize": {"w":35,"h":81}
+},
+{
+	"filename": "fs_04.png",
+	"frame": {"x":76,"y":2,"w":36,"h":78},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":36,"h":78},
+	"sourceSize": {"w":36,"h":78}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "texturefs.png",
+	"format": "RGBA8888",
+	"size": {"w":128,"h":128},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:2c5b3bad5a643910107e4a55633ea120$"
+}
+}
