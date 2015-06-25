@@ -424,8 +424,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       }
       return null;
   };
-  get _stage.child(){return _child;};
-  
+  //get _stage.child(){return _child;};
+  Object.defineProperty(_stage, "child", { get: function () { return _child; } });
   /*精灵组件*/
   var _spirit = jf.Spirit = function(id,x,y,w,h,r){
   	var _this = this,
