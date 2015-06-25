@@ -35,7 +35,7 @@
 "meta": {
 	"app": "http://www.texturepacker.com",
 	"version": "1.0",
-	"image": "texturefs.png",
+	"image": "res/texturefs.png",
 	"format": "RGBA8888",
 	"size": {"w":128,"h":128},
 	"scale": "1",

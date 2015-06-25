@@ -60,7 +60,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _running = false,
   _storeEvents = [],
   //_defJumpAttrVal = { x: 10, y: 10, alpha: 0.1, rotate: Math.PI / 180, scaleX: 0.1, scaleY: 0.1 },
-  _callFrames = function () {
+  _callFrames = function (c2d) {
       for (var i = this.length - 1; i >= 0; i--)
           this[i].call(null,c2d);
   },
@@ -71,41 +71,29 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
           }
       }
   },
-  /*处得系统事件*/
+  /*鼠标事件*/
   _InitSysEvent = function (ele) {
-
-      /*attachEvent*/
-     
       var box = {top:0,left:0}
-      //var evt = {x:0,y:0,keyCode:0,touch:[]};
       if (!ele.addEventListener)
           return;
-      /*
-      ele.addEventListener('click', function (e) {
-          var box = _offset(e.target);
-          var _pos = { x: e.pageX - box.left, y: e.pageY - box.top };
-          var _dobj = _stage.tipDobject(_pos);
-          _callEvent.call(_storeEvents, { type: 'mouse.click', pos: _pos, curObj: _dobj });
-      }, false);
-      */
       ele.addEventListener('mousedown', function (e) {
 
           var box = _offset(e.target);
           var _pos = { x: e.pageX - box.left, y: e.pageY - box.top };
-          var _dobj = _stage.tipDobject(_pos);
-          _callEvent.call(_storeEvents, { type: 'mouse.down', pos: _pos, curObj: _dobj });
+          var _spi = _stage.tipSpirit(_pos);
+          _callEvent.call(_storeEvents, { type: 'mouse.down', pos: _pos, spirit: _spi });
       }, false);
       ele.addEventListener('mousemove', function (e) {
           var box = _offset(e.target);
           var _pos = { x: e.pageX - box.left, y: e.pageY - box.top };
-          var _dobj = _stage.tipDobject(_pos);
-          _callEvent.call(_storeEvents, { type: 'mouse.move', pos: _pos, curObj: _dobj });
+          var _spi = _stage.tipSpirit(_pos);
+          _callEvent.call(_storeEvents, { type: 'mouse.move', pos: _pos, spirit: _spi });
       }, false);
       ele.addEventListener('mouseup', function (e) {
           var box = _offset(e.target);
           var _pos = { x: e.pageX - box.left, y: e.pageY - box.top };
-          var _dobj = _stage.tipDobject(_pos);
-          _callEvent.call(_storeEvents, { type: 'mouse.up', pos: _pos, curObj: _dobj });
+          var _spi = _stage.tipSpirit(_pos);
+          _callEvent.call(_storeEvents, { type: 'mouse.up', pos: _pos, spirit: _spi });
       }, false);
       window.addEventListener('keydown', function (e) {
           _callEvent.call(_storeEvents, { type: 'key.down', keyCode: e.keyCode });
@@ -136,9 +124,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
               };
           }
 
-          var _dobj = _stage.tipDobject(poslist[0]);
+          var _spi = _stage.tipSpirit(poslist[0]);
 
-          _callEvent.call(_storeEvents, { type: _type, touchPosList: poslist, curObj: _dobj });
+          _callEvent.call(_storeEvents, { type: _type, touchPosList: poslist, spirit: _spi });
           e.preventDefault();
           e.stopPropagation();
       };
@@ -160,12 +148,13 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       if (!_running)
           return;
       _c2d.clearRect(0, 0, this.width, this.height);
-
+			
       for (var i = 0; i < _child.length; i++) {
           if (_child[i].hide)
               continue;
+              
           if (_child[i])
-              _child[i].callFrame(c2d);
+              _child[i].callOwnFrame(_c2d);
           //for(var j = 0;j < this._child[i]._storeRuns.length;j++)
           //	this._child[i]._storeRuns[j](_c2d);
       }
@@ -415,32 +404,21 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _stage.tipSpirit = function (pos) {
       var leng = _child.length;
       for (var i = leng - 1; i >= 0; i--) {
-          if (pos.x >= this._child[i].x &&
+          if (pos.x >= _child[i].x &&
 			 pos.x <= _child[i].x + _child[i].width &&
 			 pos.y >= _child[i].y &&
 			 pos.y <= _child[i].y + _child[i].height) {
-              return _child[i];
+              _child[i];
           }
       }
       return null;
   };
-  //get _stage.child(){return _child;};
-  Object.defineProperty(_stage, "child", { get: function () { return _child; } });
+  
+  //Object.defineProperty(_stage, "child", { get: function () { return _child; } });
+  _stage.__defineGetter__("child",function(){return _child;})
   /*精灵组件*/
   var _spirit = jf.Spirit = function(id,x,y,w,h,r){
-  	var _this = this,
-		_textureAtlas,
-		_textureImage,
-		_textureFramesLength,
-		_textureFrameIndex = 0,
-		_textureFrameTime = 0,
-		_tmpTextureFrameTime = 0,
-		_centerX = this.x+this.width/2,
-		_centerY = this.y+this.height/2,
-		_frames = [],
-		_child = [],
-		_storeEvents = [];
-		
+
   	this.id = id||Math.floor(Math.random()*10000000);
 		this.x = x||0; 
 		this.y = y||0; 
@@ -462,11 +440,24 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this.shadowBlur = 0;
 		this.shadowColor = 'rgba(0,0,0,0)';
 		
+		var _this = this,
+		_textureAtlas,
+		_textureImage,
+		_textureFramesLength,
+		_textureFrameIndex = 0,
+		_textureFrameCount = 0,
+		_tmpTextureFrameCount = 0,
+		_centerX = this.x+this.width/2,
+		_centerY = this.y+this.height/2,
+		_frames = [],
+		_child = [],
+		_storeEvents = [];
+		
 		var _initSpirit = function(c2d,callback){
-			if(_this.borderWidth > 0 && _this.borderColor && _this.borderColor != ''){
+			//if(_this.borderWidth > 0 && _this.borderColor && _this.borderColor != ''){
 				c2d.save();
 				c2d.beginPath();
-				c2d.translate(_centerx, _centerY);
+				c2d.translate(_centerX, _centerY);
 				c2d.rotate(this.rotate);
 				c2d.scale(this.scaleX,this.scaleY);
 				c2d.globalAlpha = this.alpha;
@@ -478,7 +469,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				c2d.strokeStyle = this.borderColor;
 				c2d.fillStyle = this.backgroundColor;
 				if(this.radius > 0){
-				    c2d.arc(_centerx, _centerx, this.radius, 0, 2 * Math.PI);
+				    c2d.arc(_centerX, _centerY, this.radius, 0, 2 * Math.PI);
 				} else {
 				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
 				}
@@ -488,10 +479,11 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				callback.call();
 				c2d.closePath();
 				c2d.restore();
-			}
+			//}
 		},
 		/*画Texture*/
 		_drawTexture =function(c2d){
+			
 			if(_textureFramesLength <= 0)
 				return;
 				
@@ -513,10 +505,10 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			if(_textureFrameIndex == 0 && _tmpTextureFrameTime == 0)
 				_callEvent.call(_storeEvents,{type:'drawtexture.start',spirit:this});
 			
-			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameTime == _textureFrameTime)
+			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameCount == _mpTextureFrameCount)
 				_callEvent.call(_storeEvents,{type:'drawtexture.end',spirit:this});
 			
-			if(_textureFrameTime == 0)
+			if(_textureFrameCount == 0)
 				_callEvent.call(_storeEvents,{type:'drawtexture.each',spirit:this});
 				
 				
@@ -527,7 +519,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				else
 					_textureFrameIndex = _textureFrameIndex >= (_textureFramesLength - 1)?_textureFramesLength -1 : _textureFrameIndex+1;
 			}
-			_tmpTextureFrameTime = _tmpTextureFrameTime < _textureFrameTime ? _textureFrameTime+1:0;
+			_mpTextureFrameCount = _mpTextureFrameCount < _textureFramecount ? _mpTextureFrameCount+1:0;
 			
 		};
 		
@@ -584,17 +576,18 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 					_storeEvents.splice(i,1);
 				
 		};
-		
-		get this.textureFrameTime(){return _textureFrameTime};
-		set this.textureFrameTime(val){_textureFrameTime=val};
-		get this.textureFrames(){return _textureAtlas.frames};
-		get centerX(){return _centerx;};
-		get centerY(){return _centery;};
-		get frames(){return _frames;};
-		get child(){return _child;};
+		this.__defineGetter__("textureFrameCount",function(){return _textureFrameTime;});
+		this.__defineSetter__("textureFrameCount",function(v){_textureFrameTime=v;});
+		this.__defineGetter__("textureFrames",function(){return _textureAtlas.frames});
+		this.__defineGetter__("centerX",function(){return _centerX});
+		this.__defineGetter__("centerY",function(){return _centerY});
+		this.__defineGetter__("frames",function(){return _frames});
+		this.__defineGetter__("child",function(){return _child});
 		/*执行*/
 		this.addFrame(function(c2d){
+			
 			_initSpirit.call(_this,c2d,function(){
+				
 				_drawTexture.call(_this,c2d);
 			});
 			
@@ -639,10 +632,11 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				this.child[i].hide = (i==index?true:false);
 			}
 		},
-		callFrame:function(c2d){
+		callOwnFrame:function(c2d){
+			
 			c2d.save();
 			c2d.beginPath();
-			c2d.translate(_centerx, _centerY);
+			c2d.translate(this.centerX, this.centerY);
 			c2d.rotate(this.rotate);
 			c2d.scale(this.scaleX,this.scaleY);
 			c2d.globalAlpha = this.alpha;
@@ -659,7 +653,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
         if (this.child[i].hide)
             continue;
         if (this.child[i])
-            this.child.callFrame();
+            this.child.callOwnFrame(c2d);
     	}
     	c2d.closePath();
 			c2d.restore();
