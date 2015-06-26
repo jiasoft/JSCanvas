@@ -22,9 +22,30 @@ body{padding:0px;margin:0px;}
 		
 
 	JF.stage.init("democavs");
-	var fs = JF.stage.createSpirit("fs01",50,50,30,30);
+	var fs = JF.stage.createSpirit("fs01",50,80,40,40);
 	fs.loadTextureJson('res/texturefs.json');
-	JF.stage.play();
+	fs.textureFrameCount = 20;
+	
+	var turn = JF.stage.createSpirit("trun",120,80,40,40,35);
+	turn.loadTextureJson('res/turn.json');
+	turn.textureFrameCount = 5;
+	
+	var bao = JF.stage.createSpirit("bao",200,80,40,40,35);
+	bao.loadTextureJson('res/bao.json');
+	bao.textureFrameCount = 10;
+	
+	var fir = JF.stage.createSpirit("fir",250,86,40,40,35);
+	fir.loadTextureJson('res/fir.json');
+	fir.textureFrameCount = 18;
+	
+	var fir_open = JF.stage.createSpirit("fir_open",280,87,40,40,35);
+	fir_open.loadTextureJson('res/fir_open.json');
+	fir_open.textureFrameCount = 20;
+	
+	setTimeout(function(){
+		JF.stage.play();
+	},1000);
+	
 	
 
 	</script>
