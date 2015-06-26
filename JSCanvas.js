@@ -37,7 +37,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 	
 	/****舞台*****/
 	var 
-	_stage = jf.stage = {width:800,height:700,rtime: 13},
+	_stage = jf.stage = {width:800,height:700},
 	_c2d,
 	_requestAnimFrame = (function(){
 	  return  window.requestAnimationFrame   ||
@@ -147,7 +147,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _run=function () {
       if (!_running)
           return;
-      _c2d.clearRect(0, 0, this.width, this.height);
+      _c2d.clearRect(0, 0, _stage.width, _stage.height);
 			
       for (var i = 0; i < _child.length; i++) {
           if (_child[i].hide)
@@ -279,10 +279,19 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       if (_running)
           return;
       _running = true;
+      var fps = 0;
+      var msg = document.createElement('span');
+      msg.setAttribute('style','position:fixed;top:0px;left:0px');
+      document.body.appendChild(msg);
       (function animloop() {
           _run();
+          fps++;
           _requestAnimFrame(animloop);
       })();
+      setInterval(function(){
+      	msg.innerHTML ="fps:"+fps;
+      	fps = 0;
+      },1000);
   }
   _stage.pause = function () {
 
@@ -333,6 +342,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       this.height = parseInt(ele.height);
       _c2d = ele.getContext("2d");
       _c2d.clearRect(0, 0, this.width, this.height);
+      
       _c2d.save();
       _InitSysEvent(ele);
        /******健盘控制器******/
@@ -443,21 +453,25 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		var _this = this,
 		_textureAtlas,
 		_textureImage,
-		_textureFramesLength,
+		_textureFramesLength = 0,
 		_textureFrameIndex = 0,
-		_textureFrameCount = 0,
+		_textureFrameCount = 10,
 		_tmpTextureFrameCount = 0,
 		_centerX = this.x+this.width/2,
 		_centerY = this.y+this.height/2,
 		_frames = [],
 		_child = [],
-		_storeEvents = [];
+		_storeEvents = [],
+		
+		_movies = [],
+		_movieIndex = 0,
+		_movieFrameIndex = 0;
 		
 		var _initSpirit = function(c2d,callback){
 			//if(_this.borderWidth > 0 && _this.borderColor && _this.borderColor != ''){
 				c2d.save();
 				c2d.beginPath();
-				c2d.translate(_centerX, _centerY);
+				c2d.translate(this.x+0.5, this.y+0.5);
 				c2d.rotate(this.rotate);
 				c2d.scale(this.scaleX,this.scaleY);
 				c2d.globalAlpha = this.alpha;
@@ -469,11 +483,12 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				c2d.strokeStyle = this.borderColor;
 				c2d.fillStyle = this.backgroundColor;
 				if(this.radius > 0){
-				    c2d.arc(_centerX, _centerY, this.radius, 0, 2 * Math.PI);
+				    c2d.arc(this.width/2, this.height/2, this.radius, 0, 2 * Math.PI);
 				} else {
-				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
+				    c2d.rect(0, 0, this.width, this.height);
 				}
-				c2d.stroke();
+				if(this.borderColor && this.borderColor != '')
+					c2d.stroke();
 				if(this.backgroundColor && this.backgroundColor != '')
 					c2d.fill();
 				callback.call();
@@ -502,10 +517,10 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			c2d.closePath();
 			c2d.restore();
 			
-			if(_textureFrameIndex == 0 && _tmpTextureFrameTime == 0)
+			if(_textureFrameIndex == 0 && _tmpTextureFrameCount == 0)
 				_callEvent.call(_storeEvents,{type:'drawtexture.start',spirit:this});
 			
-			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameCount == _mpTextureFrameCount)
+			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameCount == _tmpTextureFrameCount)
 				_callEvent.call(_storeEvents,{type:'drawtexture.end',spirit:this});
 			
 			if(_textureFrameCount == 0)
@@ -513,14 +528,37 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				
 				
 			/*换帧 */
-			if(_tmpTextureFrameTime == 0){
+			_tmpTextureFrameCount = _tmpTextureFrameCount < _textureFrameCount ? _tmpTextureFrameCount+1:0;
+			if(_tmpTextureFrameCount == _textureFrameCount){
 				if(this.loop)
 					_textureFrameIndex = _textureFrameIndex >= (_textureFramesLength - 1)?0:_textureFrameIndex+1;
 				else
 					_textureFrameIndex = _textureFrameIndex >= (_textureFramesLength - 1)?_textureFramesLength -1 : _textureFrameIndex+1;
 			}
-			_mpTextureFrameCount = _mpTextureFrameCount < _textureFramecount ? _mpTextureFrameCount+1:0;
 			
+			
+		},
+		_drawMovie = function(c2d){
+			
+			if(_movies.length <= 0)
+				return;
+			c2d.save();
+			c2d.beginPath();
+			
+			_movies[_movieIndex].draw.call(_this,c2d);
+			c2d.closePath();
+			c2d.restore();
+			
+			
+			/*换帧*/
+			_movieFrameIndex++;
+			if(_movieFrameIndex >= _movies[_movieIndex].frameCount){
+				_movieFrameIndex = 0;
+				if(_this.loop)
+					_movieIndex = _movieIndex < _movies.length-1 ? _movieIndex+1:0;
+				else
+					_movieIndex = _movieIndex < _movies.length-1 ? _movieIndex+1:_movies.length - 1;
+			}
 		};
 		
 		this.loadTextureJson = function(url){
@@ -536,6 +574,10 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			_textImage = new Image();
 			_textImage.src = json.meta.image;
 			_textureFramesLength = json.frames.length;
+		};
+		this.addMovie = function(drawfun,frameCount){
+			frameCount = frameCount||1;
+			_movies.push({draw:drawfun,frameCount:frameCount});
 		};
 		this.addFrame = function(callback){
 			if(typeof(callback) == 'function'){
@@ -576,9 +618,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 					_storeEvents.splice(i,1);
 				
 		};
-		this.__defineGetter__("textureFrameCount",function(){return _textureFrameTime;});
-		this.__defineSetter__("textureFrameCount",function(v){_textureFrameTime=v;});
-		this.__defineGetter__("textureFrames",function(){return _textureAtlas.frames});
+		this.__defineGetter__("textureFrameCount",function(){return _textureFrameCount;});
+		this.__defineSetter__("textureFrameCount",function(v){_textureFrameCount=v;});
+		//this.__defineGetter__("textureFrames",function(){return _textureAtlas.frames});
 		this.__defineGetter__("centerX",function(){return _centerX});
 		this.__defineGetter__("centerY",function(){return _centerY});
 		this.__defineGetter__("frames",function(){return _frames});
@@ -589,6 +631,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			_initSpirit.call(_this,c2d,function(){
 				
 				_drawTexture.call(_this,c2d);
+				_drawMovie.call(_this,c2d);
 			});
 			
 		});

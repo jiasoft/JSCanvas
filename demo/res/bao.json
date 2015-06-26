@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "bao_01.png",
+	"frame": {"x":2,"y":71,"w":50,"h":73},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":50,"h":73},
+	"sourceSize": {"w":50,"h":73}
+},
+{
+	"filename": "bao_02.png",
+	"frame": {"x":66,"y":2,"w":51,"h":70},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":51,"h":70},
+	"sourceSize": {"w":51,"h":70}
+},
+{
+	"filename": "bao_03.png",
+	"frame": {"x":2,"y":2,"w":62,"h":67},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":67},
+	"sourceSize": {"w":62,"h":67}
+},
+{
+	"filename": "bao_04.png",
+	"frame": {"x":2,"y":2,"w":62,"h":67},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":67},
+	"sourceSize": {"w":62,"h":67}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "res/bao.png",
+	"format": "RGBA8888",
+	"size": {"w":128,"h":256},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:702173ccb8bc7abafa87667ca4f31251$"
+}
+}

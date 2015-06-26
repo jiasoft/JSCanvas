@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>canvas</title>
+<title>demo 01</title>
 <meta name="Keywords" content="canvas demo" />
 <meta name="Description" content="canvas demo" />
 <meta name="robots" content="index, follow" />
@@ -14,7 +14,7 @@ body{padding:0px;margin:0px;}
 </head>
 <body>
 	<div style="width:1000px;margin:auto;">
-	<canvas width="800" height="800" id="democavs" _style="position:fixed;top:20px;left:20px;"></canvas>
+	<canvas width="800" height="400" id="democavs" _style="position:fixed;top:20px;left:20px;"></canvas>
 	</div>
 	<div id="msg"></div>
 	<script type="text/javascript" src="../JSCanvas.js"></script>
@@ -22,29 +22,38 @@ body{padding:0px;margin:0px;}
 		
 
 	JF.stage.init("democavs");
-	var fs = JF.stage.createSpirit("fs01",50,80,40,40);
+	var fs = JF.stage.createSpirit("fs01",50,30,40,40);
 	fs.loadTextureJson('res/texturefs.json');
 	fs.textureFrameCount = 20;
 	
-	var turn = JF.stage.createSpirit("trun",120,80,40,40,35);
+	var turn = JF.stage.createSpirit("trun",120,30,40,40,35);
 	turn.loadTextureJson('res/turn.json');
 	turn.textureFrameCount = 5;
 	
-	var bao = JF.stage.createSpirit("bao",200,80,40,40,35);
+	var bao = JF.stage.createSpirit("bao",200,30,40,40,35);
 	bao.loadTextureJson('res/bao.json');
 	bao.textureFrameCount = 10;
 	
-	var fir = JF.stage.createSpirit("fir",250,86,40,40,35);
+	var fir = JF.stage.createSpirit("fir",250,36,40,40,35);
 	fir.loadTextureJson('res/fir.json');
 	fir.textureFrameCount = 18;
 	
-	var fir_open = JF.stage.createSpirit("fir_open",280,87,40,40,35);
+	var fir_open = JF.stage.createSpirit("fir_open",280,37,40,40,35);
 	fir_open.loadTextureJson('res/fir_open.json');
 	fir_open.textureFrameCount = 20;
 	
+	for(var i = 0;i < 20;i++){
+		turn = JF.stage.createSpirit(null,Math.random()*600,Math.random()*150+100,40,40,35);
+		turn.loadTextureJson('res/turn.json');
+		turn.textureFrameCount = 8;
+		turn.scaleX = 0.6;
+		turn.scaleY = 0.6;
+	}
+		
 	setTimeout(function(){
 		JF.stage.play();
-	},1000);
+		bao.animates({x:750},20);
+	},3000);
 	
 	
 

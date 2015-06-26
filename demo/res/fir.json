@@ -1,0 +1,28 @@
+{"frames": [
+
+{
+	"filename": "fir_01.png",
+	"frame": {"x":29,"y":2,"w":32,"h":23},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":23},
+	"sourceSize": {"w":32,"h":23}
+},
+{
+	"filename": "fir_02.png",
+	"frame": {"x":2,"y":2,"w":25,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":25,"h":27},
+	"sourceSize": {"w":25,"h":27}
+}],
+"meta": {
+	"app": "http://www.texturepacker.com",
+	"version": "1.0",
+	"image": "res/fir.png",
+	"format": "RGBA8888",
+	"size": {"w":64,"h":32},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:5c016af78dd3849a0fdb40d5b25a7112$"
+}
+}
