@@ -18,44 +18,47 @@ body{padding:0px;margin:0px;}
 	</div>
 	<div id="msg"></div>
 	<script type="text/javascript" src="../JSCanvas.js"></script>
+	<script type="text/javascript" src="res/bao.json"></script>
+	<script type="text/javascript" src="res/fir.json"></script>
+	<script type="text/javascript" src="res/fir_open.json"></script>
+	<script type="text/javascript" src="res/texturefs.json"></script>
+	<script type="text/javascript" src="res/turn.json"></script>
 	<script>
 		
 
 	JF.stage.init("democavs");
 	var fs = JF.stage.createSpirit("fs01",50,30,40,40);
-	fs.loadTextureJson('res/texturefs.json');
+	fs.setTextureJson(texturefs);
 	fs.textureFrameCount = 20;
+	fs.animates({x:400},100);
+	var turnSpri = JF.stage.createSpirit("trun",120,30,40,40,35);
+	turnSpri.setTextureJson(turn);
+	turnSpri.textureFrameCount = 5;
 	
-	var turn = JF.stage.createSpirit("trun",120,30,40,40,35);
-	turn.loadTextureJson('res/turn.json');
-	turn.textureFrameCount = 5;
+	var baoSpri = JF.stage.createSpirit("bao",200,30,40,40,35);
+	baoSpri.setTextureJson(bao);
+	baoSpri.textureFrameCount = 10;
 	
-	var bao = JF.stage.createSpirit("bao",200,30,40,40,35);
-	bao.loadTextureJson('res/bao.json');
-	bao.textureFrameCount = 10;
+	var firPri = JF.stage.createSpirit("fir",250,36,40,40,35);
+	firPri.setTextureJson(fir);
+	firPri.textureFrameCount = 18;
 	
-	var fir = JF.stage.createSpirit("fir",250,36,40,40,35);
-	fir.loadTextureJson('res/fir.json');
-	fir.textureFrameCount = 18;
+	var fir_open_spri = JF.stage.createSpirit("fir_open",280,37,40,40,35);
+	fir_open_spri.setTextureJson(fir_open);
+	fir_open_spri.textureFrameCount = 20;
 	
-	var fir_open = JF.stage.createSpirit("fir_open",280,37,40,40,35);
-	fir_open.loadTextureJson('res/fir_open.json');
-	fir_open.textureFrameCount = 20;
-	
-	for(var i = 0;i < 20;i++){
-		turn = JF.stage.createSpirit(null,Math.random()*600,Math.random()*150+100,40,40,35);
-		turn.loadTextureJson('res/turn.json');
-		turn.textureFrameCount = 8;
-		turn.scaleX = 0.6;
-		turn.scaleY = 0.6;
+	for(var i = 0;i < 50;i++){
+		turnSpri = JF.stage.createSpirit(null,Math.random()*600,Math.random()*150+100,60,60,true);
+		turnSpri.borderColor="red";
+		turnSpri.setTextureJson(turn);
+		turnSpri.textureFrameCount = 8;
+		turnSpri.scaleX = 1;
+		turnSpri.scaleY = 1;
 	}
 		
-	setTimeout(function(){
-		JF.stage.play();
-		bao.animates({x:750},20);
-	},3000);
 	
-	
+	JF.stage.play();
+
 
 	</script>
 </body>

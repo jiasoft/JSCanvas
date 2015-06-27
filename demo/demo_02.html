@@ -13,8 +13,8 @@ body{padding:0px;margin:0px;}
 </style>
 </head>
 <body>
-	<div style="width:1000px;margin:auto;">
-	<canvas width="500" height="500" id="democavs" style="background:#000;"></canvas>
+	<div style="margin:auto;text-align:center">
+	<canvas width="600" height="600" id="democavs" style="background:#000;"></canvas>
 	</div>
 	<div id="msg"></div>
 	<script type="text/javascript" src="../JSCanvas.js"></script>
@@ -22,40 +22,91 @@ body{padding:0px;margin:0px;}
 		
 
 	JF.stage.init("democavs");
+	JF.stage.play();
+	var
+	stagewidth = 600,
+	stageheight = 600;
+	roundLength = 20,
+	boxWidth = 500,
+	boxHeight = 500;
+	var gbox = createCollRound();
+	!function crC(){
+		if(gbox.scaleX >= 0.06)
+			gbox = createCollRound();
+		setTimeout(crC,1000/60);
+	}();
+	
+	
 
-	var m;
-	for(var i = 0;i < 1;i++){
-		m = JF.stage.createSpirit(null,200,100,40,40,40);
-		m.borderColor = "#ffffff";
-		m.borderWidth = 1;
+	
+	function createCollRound(){
+		var box = JF.stage.createSpirit(null,stagewidth/2,stageheight/2,boxWidth,boxHeight,true);
+		box.scaleX = box.scaleY = 0.01;
+		var minRaius = box.radius * (Math.PI * 2 / roundLength / 2 / 2) * 2 - 2;
+		var w = minRaius * 2,h = minRaius * 2;
+		var y = 0,x = box.radius;
+		for(var i = 0;i < roundLength;i++){
+			createRound(i,w,h,box);
+		}
+		
+		box.animates({scaleX:1,scaleY:1},1500,function(){
+			JF.stage.remove(box);
+			//createCollRound();
+		});
+		box.animates({rotate:-Math.PI*2},1000,function(){
+			
+		});
+		return box;
+	}
+	
+	/***************/
+	function createRound(i,w,h,box){
+		x = boxWidth/2 * Math.sin(Math.PI * 2 / roundLength * i );
+		y = boxWidth/2 * Math.sin(Math.PI/2 - Math.PI * 2 / roundLength * i );
+		var m = new JF.Spirit("m_0"+i,x,y,w,h,true);
+		box.add(m);
+		m.scaleX = 1;
+		m.scaleY = 1;
+		m.borderColor = "rgba(130,0,0,1)";
+		m.backgroundColor="#000";
+		m.borderWidth = 3;
+		m.shadowBlur = 5;
+		m.shadowColor = "#ce2929";
+		m.shadowOffsetX = 0;
+		m.shadowOffsetX = 0;
 		m.addMovie(function(g){
-			g.arc(-5,-5,10,0,Math.PI*2);
+			
+			g.fillStyle = "red";
+			g.arc(0,0,5,0,Math.PI*2);
+			g.arc(this.radius-15,this.radius-15,5,0,Math.PI*2);
+			g.fill();
+		},30);
+		m.addMovie(function(g){
 			g.fillStyle = "#ffffff";
+			g.arc(0,0,10,0,Math.PI*2);
+			g.arc(this.radius-15,this.radius-15,5,0,Math.PI*2);
 			g.fill();
 		},5);
 		m.addMovie(function(g){
-			g.arc(-5,-5,10,0,Math.PI*2);
+			
 			g.fillStyle = "#f49db3";
+			g.arc(0,0,10,0,Math.PI*2);
+			g.arc(this.radius-15,this.radius-15,5,0,Math.PI*2);
 			g.fill();
 		},8);
 		m.addMovie(function(g){
-			g.arc(-5,-5,10,0,Math.PI*2);
 			g.fillStyle = "#b7ebad";
+			g.arc(0,0,10,0,Math.PI*2);
+			g.arc(this.radius-15,this.radius-15,5,0,Math.PI*2);
 			g.fill();
 		},3);
-		m.addMovie(function(g){
-			g.arc(-5,-5,5,0,Math.PI*2);
-			g.fillStyle = "red";
-			g.fill();
-		},30);
-		m.animates({rotate:Math.PI*2},200,function(){
-			
-		})
+		!function turn(){
+			m.animates({rotate:Math.PI*2},500,function(){
+				m.rotate = 0;
+				turn();
+			});
+	}();
 	}
-	JF.stage.play();
-
-	
-	
 
 	</script>
 </body>

@@ -61,8 +61,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _storeEvents = [],
   //_defJumpAttrVal = { x: 10, y: 10, alpha: 0.1, rotate: Math.PI / 180, scaleX: 0.1, scaleY: 0.1 },
   _callFrames = function (c2d) {
-      for (var i = this.length - 1; i >= 0; i--)
-          this[i].call(null,c2d);
+  	
+    for (var i = this.length - 1; i >= 0; i--)
+        this[i].call(null,c2d);
   },
   _callEvent = function (obj) {
       if (this instanceof Array) {
@@ -342,7 +343,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       this.height = parseInt(ele.height);
       _c2d = ele.getContext("2d");
       _c2d.clearRect(0, 0, this.width, this.height);
-      
+      _c2d.translate(0.5,0.5);
       _c2d.save();
       _InitSysEvent(ele);
        /******健盘控制器******/
@@ -427,14 +428,12 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   //Object.defineProperty(_stage, "child", { get: function () { return _child; } });
   _stage.__defineGetter__("child",function(){return _child;})
   /*精灵组件*/
-  var _spirit = jf.Spirit = function(id,x,y,w,h,r){
+  var _spirit = jf.Spirit = function(id,cx,cy,w,h,r){
 
   	this.id = id||Math.floor(Math.random()*10000000);
-		this.x = x||0; 
-		this.y = y||0; 
 		this.width= w||0;
 		this.height=h||0;
-		this.radius = r||0;
+		this.IsRund = r||false;
 		this.rotate = 0;
 		this.scaleX = 1;
 		this.scaleY= 1;
@@ -448,7 +447,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this.shadowOffsetX = 0;
 		this.shadowOffsetY = 0;
 		this.shadowBlur = 0;
-		this.shadowColor = 'rgba(0,0,0,0)';
+		this.shadowColor = "";
 		
 		var _this = this,
 		_textureAtlas,
@@ -457,40 +456,30 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		_textureFrameIndex = 0,
 		_textureFrameCount = 10,
 		_tmpTextureFrameCount = 0,
-		_centerX = this.x+this.width/2,
-		_centerY = this.y+this.height/2,
+		_centerX = cx,
+		_centerY = cy,
 		_frames = [],
 		_child = [],
 		_storeEvents = [],
+		_radus = 0,
 		
 		_movies = [],
 		_movieIndex = 0,
 		_movieFrameIndex = 0;
 		
 		var _initSpirit = function(c2d,callback){
-			//if(_this.borderWidth > 0 && _this.borderColor && _this.borderColor != ''){
 				c2d.save();
 				c2d.beginPath();
-				c2d.translate(this.x+0.5, this.y+0.5);
-				c2d.rotate(this.rotate);
-				c2d.scale(this.scaleX,this.scaleY);
-				c2d.globalAlpha = this.alpha;
-				c2d.shadowOffsetX = this.shadowOffsetX;
-				c2d.shadowOffsetY = this.shadowOffsetY;
-				c2d.shadowBlur = this.shadowBlur;
-				c2d.shadowColor =this.shadowColor;
-				c2d.lineWidth = this.borderWidth;
-				c2d.strokeStyle = this.borderColor;
-				c2d.fillStyle = this.backgroundColor;
-				if(this.radius > 0){
-				    c2d.arc(this.width/2, this.height/2, this.radius, 0, 2 * Math.PI);
+				if(this.IsRund){
+				    c2d.arc(0, 0, this.radius, 0, 2 * Math.PI);
 				} else {
-				    c2d.rect(0, 0, this.width, this.height);
+				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
 				}
-				if(this.borderColor && this.borderColor != '')
-					c2d.stroke();
+				
 				if(this.backgroundColor && this.backgroundColor != '')
 					c2d.fill();
+				if(this.borderColor && this.borderColor != '')
+					c2d.stroke();
 				callback.call();
 				c2d.closePath();
 				c2d.restore();
@@ -501,19 +490,23 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			
 			if(_textureFramesLength <= 0)
 				return;
-				
+			if(!_textureImage)
+				return;
 			c2d.save();
 			c2d.beginPath();
+			
+			try{
 			
 			c2d.drawImage(_textureImage,
 												_textureAtlas.frames[_textureFrameIndex].frame.x,
 												_textureAtlas.frames[_textureFrameIndex].frame.y,
 												_textureAtlas.frames[_textureFrameIndex].frame.w,
 												_textureAtlas.frames[_textureFrameIndex].frame.h,
-												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.x,
-												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.y,
+												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.x-this.width/2,
+												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.y-this.height/2,
 												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.w,
 												_textureAtlas.frames[_textureFrameIndex].spriteSourceSize.h);
+			}catch(e){console.log(e)}
 			c2d.closePath();
 			c2d.restore();
 			
@@ -571,8 +564,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		};
 		this.setTextureJson = function(json){
 			_textureAtlas = json;
-			_textImage = new Image();
-			_textImage.src = json.meta.image;
+			_textureImage = new Image();
+			_textureImage.src = json.meta.image;
 			_textureFramesLength = json.frames.length;
 		};
 		this.addMovie = function(drawfun,frameCount){
@@ -620,16 +613,20 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		};
 		this.__defineGetter__("textureFrameCount",function(){return _textureFrameCount;});
 		this.__defineSetter__("textureFrameCount",function(v){_textureFrameCount=v;});
-		//this.__defineGetter__("textureFrames",function(){return _textureAtlas.frames});
 		this.__defineGetter__("centerX",function(){return _centerX});
+		this.__defineSetter__("centerX",function(v){_centerX = v});
 		this.__defineGetter__("centerY",function(){return _centerY});
+		this.__defineSetter__("centerY",function(v){_centerY = v});
+		this.__defineGetter__("x",function(){return _centerX - this.width/2});
+		this.__defineGetter__("y",function(){return _centerY - this.height/2});
 		this.__defineGetter__("frames",function(){return _frames});
 		this.__defineGetter__("child",function(){return _child});
+		this.__defineGetter__("radius",function(){return _this.width/2});
+		
 		/*执行*/
 		this.addFrame(function(c2d){
 			
 			_initSpirit.call(_this,c2d,function(){
-				
 				_drawTexture.call(_this,c2d);
 				_drawMovie.call(_this,c2d);
 			});
@@ -637,32 +634,28 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		});
   };
   _spirit.prototype = {
-		animates:function(obj,time,callback){
+		animates:function(obj,frameCount,callback){
 			
 			for(var i in obj)
-				this.animate(i,obj[i],time,callback);
+				this.animate(i,obj[i],frameCount,callback);
 		},
 		animate:function(atr,value,frameCount,callback){
 			frameCount = frameCount||20;
 			var _frameIndex = 0;
 			//var step = value >= this[atr]?_defJumpAttrVal[atr]:-_defJumpAttrVal[atr];
 			var step = (value - this[atr])/frameCount;
-			
-			
-			if(Math.abs(step) <=  0.001)
-				return;
 			var _this = this;
 			var _changatr = function(){
 				_this[atr] +=step;
 				_frameIndex++;
 				if(_frameIndex >= frameCount){
-					if(_this[atr] <=  value){
+					
 						_this[atr] = value;
 						_this.removeFrame(_changatr);
 						if(typeof(callback) == 'function')
 							callback();
 						return;
-					}
+					
 				}
 			};
 			this.addFrame(_changatr);
@@ -696,7 +689,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
         if (this.child[i].hide)
             continue;
         if (this.child[i])
-            this.child.callOwnFrame(c2d);
+            this.child[i].callOwnFrame(c2d);
     	}
     	c2d.closePath();
 			c2d.restore();
