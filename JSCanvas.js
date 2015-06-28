@@ -61,15 +61,16 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _storeEvents = [],
   //_defJumpAttrVal = { x: 10, y: 10, alpha: 0.1, rotate: Math.PI / 180, scaleX: 0.1, scaleY: 0.1 },
   _callFrames = function (c2d) {
-  	
-    for (var i = this.length - 1; i >= 0; i--)
+  	var len = this.length;
+    for (var i = 0; i < len; i++)
         this[i].call(null,c2d);
   },
   _callEvent = function (obj) {
       if (this instanceof Array) {
-          for (var i = 0; i < this.length; i++) {
-              this[i].call(null,obj);
-          }
+      	var len = this.length;
+	      for (var i = 0; i < len; i++) {
+	          this[i].call(null,obj);
+	      }
       }
   },
   /*鼠标事件*/
@@ -116,7 +117,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
           var box;
 
           _touches = e.changedTouches;
-          for (var i = 0; i < _touches.length; i++) {
+          var len = _touches.length;
+          for (var i = 0; i < len; i++) {
               box = _offset(_touches[i].target);
               poslist[i] = {
                   x: _touches[i].pageX - box.left,
@@ -149,15 +151,13 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       if (!_running)
           return;
       _c2d.clearRect(0, 0, _stage.width, _stage.height);
-			
-      for (var i = 0; i < _child.length; i++) {
+			var len = _child.length
+      for (var i = 0; i < len; i++) {
           if (_child[i].hide)
               continue;
               
           if (_child[i])
               _child[i].callOwnFrame(_c2d);
-          //for(var j = 0;j < this._child[i]._storeRuns.length;j++)
-          //	this._child[i]._storeRuns[j](_c2d);
       }
       _checkCollision();
   },
@@ -240,7 +240,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       } 
       catch (e) {
         var XmlHttpVersions = new Array("MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP");
-        for (var i = 0; i < XmlHttpVersions.length && !xmlHttp; i++) {
+        var len = XmlHttpVersions.length;
+        for (var i = 0; i < len && !xmlHttp; i++) {
           try {
             xr = new ActiveXObject(XmlHttpVersions[i]);
           } 
@@ -270,7 +271,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       _child.push(obj);
   };
   _stage.remove=function (obj) {
-      for (var i = 0; i < _child.length; i++) {
+  	var len = _child.length
+      for (var i = 0; i < len; i++) {
           if (_child[i].id == obj.id)
               _child.splice(i, 1);
       }
@@ -282,7 +284,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       _running = true;
       var fps = 0;
       var msg = document.createElement('span');
-      msg.setAttribute('style','position:fixed;top:0px;left:0px');
+      msg.setAttribute('style','position:fixed;top:0px;left:0px;background:#fff;padding:0px 5px');
       document.body.appendChild(msg);
       (function animloop() {
           _run();
@@ -305,7 +307,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _stage.indexOf = function (spi) {
       if (_child.indexOf)
           return _child.indexOf(spi);
-      for (var i = 0; i < _child.length; i++)
+      var len = _child.length;
+      for (var i = 0; i < len; i++)
           if (_child[i] === spi)
               return i;
       return -1;
@@ -343,7 +346,6 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       this.height = parseInt(ele.height);
       _c2d = ele.getContext("2d");
       _c2d.clearRect(0, 0, this.width, this.height);
-      _c2d.translate(0.5,0.5);
       _c2d.save();
       _InitSysEvent(ele);
        /******健盘控制器******/
@@ -399,8 +401,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       _storeEvents.push(callback);
   }
   _stage.unOn =  function (callback) {
-
-      for (var i = 0; i < _storeEvents.length; i++)
+			var len = _storeEvents.length
+      for (var i = 0; i < len; i++)
           if (_storeEvents[i] == callback)
               _storeEvents.splice(i, 1);
   }
@@ -413,13 +415,13 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   }
 
   _stage.tipSpirit = function (pos) {
-      var leng = _child.length;
-      for (var i = leng - 1; i >= 0; i--) {
+      var len = _child.length;
+      for (var i = len - 1; i >= 0; i--) {
           if (pos.x >= _child[i].x &&
-			 pos.x <= _child[i].x + _child[i].width &&
-			 pos.y >= _child[i].y &&
-			 pos.y <= _child[i].y + _child[i].height) {
-              _child[i];
+					 pos.x <= _child[i].x + _child[i].width &&
+					 pos.y >= _child[i].y &&
+					 pos.y <= _child[i].y + _child[i].height) {
+		              return _child[i];
           }
       }
       return null;
@@ -440,13 +442,13 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this.hide = false;
 		this.canCollision = false;
 		this.loop = true;
-		this.backgroundColor="rgba(0,0,0,0)";
+		this.backgroundColor= "";
 		this.borderWidth =0;
-		this.borderColor = "rgba(0,0,0,0)";
+		this.borderColor = "";
 		this.shadowOffsetX = 0;
 		this.shadowOffsetY = 0;
 		this.shadowBlur = 0;
-		this.shadowColor = "rgba(0,0,0,0)";
+		this.shadowColor = "";
 		
 		var _this = this,
 		_textureAtlas,
@@ -481,14 +483,16 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				
 				if(this.IsRund){
 			    c2d.arc(0, 0, this.radius, 0, 2 * Math.PI);
+			    c2d.stroke();
 				} else {
 				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
+				    c2d.stroke();
 				}
-				c2d.stroke();
+				
 			
 				
-				//if(this.backgroundColor && this.backgroundColor != '')
-				c2d.fill();
+				if(this.backgroundColor && this.backgroundColor != '')
+					c2d.fill();
 
 				c2d.closePath();
 				c2d.restore();
@@ -586,7 +590,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			}
 		};
 		this.removeFrame =function(callback){
-			for(var i = 0;i < _frames.length;i++){
+			var len = _frames.length;
+			for(var i = 0;i < len;i++){
 				if(_frames[i] == callback){
 					_frames.splice(i,1);
 				}
@@ -596,7 +601,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			_child.push(spi);
 		};
 		this.remove =function(spi){
-			for(var i = 0;i < _child.length;i++){
+			var len = _child.length;
+			for(var i = 0;i < len;i++){
 				if(_child[i].id == spi.id)
 					_child.splice(i,1);
 			}
@@ -604,7 +610,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this.indexOf =function(spi){
 			if(_child.indexOf)
 				return _child.indexOf(spi);
-			for(var i =0;i < _child.length;i++)
+			var len = _child.length;
+			for(var i =0;i < len;i++)
 				if(this._child[i] === spi)
 					return i;
 			return -1;
@@ -613,8 +620,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			_storeEvents.push(callback);
 		};
 		this.unOn=function(callback){
-			
-			for(var i = 0; i < _storeEvents.length;i++)
+			var len = _storeEvents.length;
+			for(var i = 0; i < len;i++)
 				if(_storeEvents[i] == callback)
 					_storeEvents.splice(i,1);
 				
@@ -631,7 +638,6 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		
 		/*执行*/
 		this.addFrame(function(c2d){
-			
 			_initSpirit.call(_this,c2d);
 			_drawTexture.call(_this,c2d);
 			_drawMovie.call(_this,c2d);
