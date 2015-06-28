@@ -53,9 +53,12 @@ body{padding:0px;margin:0px;}
 			JF.stage.remove(box);
 			//createCollRound();
 		});
-		box.animates({rotate:-Math.PI*2},1000,function(){
-			
-		});
+		!function turn(){
+			box.animates({rotate:-Math.PI*2},1000,function(){
+				box.rotate = 0;
+				turn()
+			});
+		}();
 		return box;
 	}
 	

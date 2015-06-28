@@ -467,20 +467,30 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		_movieIndex = 0,
 		_movieFrameIndex = 0;
 		
-		var _initSpirit = function(c2d,callback){
+		var _initSpirit = function(c2d){
 				c2d.save();
 				c2d.beginPath();
+				
+				c2d.shadowOffsetX = this.shadowOffsetX;
+				c2d.shadowOffsetY = this.shadowOffsetY;
+				c2d.shadowBlur = this.shadowBlur;
+				c2d.shadowColor =this.shadowColor;
+				c2d.lineWidth = this.borderWidth;
+				c2d.strokeStyle = this.borderColor;
+				c2d.fillStyle = this.backgroundColor;
+				
+				
 				if(this.IsRund){
-				    c2d.arc(0, 0, this.radius, 0, 2 * Math.PI);
+			    c2d.arc(0, 0, this.radius, 0, 2 * Math.PI);
 				} else {
 				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
 				}
+				c2d.stroke();
+			
 				
 				if(this.backgroundColor && this.backgroundColor != '')
 					c2d.fill();
-				if(this.borderColor && this.borderColor != '')
-					c2d.stroke();
-				callback.call();
+
 				c2d.closePath();
 				c2d.restore();
 			//}
@@ -494,7 +504,6 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				return;
 			c2d.save();
 			c2d.beginPath();
-			
 			try{
 			
 			c2d.drawImage(_textureImage,
@@ -626,11 +635,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		/*执行*/
 		this.addFrame(function(c2d){
 			
-			_initSpirit.call(_this,c2d,function(){
-				_drawTexture.call(_this,c2d);
-				_drawMovie.call(_this,c2d);
-			});
-			
+			_initSpirit.call(_this,c2d);
+			_drawTexture.call(_this,c2d);
+			_drawMovie.call(_this,c2d);
 		});
   };
   _spirit.prototype = {
@@ -676,13 +683,6 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			c2d.rotate(this.rotate);
 			c2d.scale(this.scaleX,this.scaleY);
 			c2d.globalAlpha = this.alpha;
-			c2d.shadowOffsetX = this.shadowOffsetX;
-			c2d.shadowOffsetY = this.shadowOffsetY;
-			c2d.shadowBlur = this.shadowBlur;
-			c2d.shadowColor =this.shadowColor;
-			c2d.lineWidth = this.borderWidth;
-			c2d.strokeStyle = this.borderColor;
-			c2d.fillStyle = this.backgroundColor;
 			_callFrames.call(this.frames,c2d);
 			var len = this.child.length;
 			for (var i = 0; i < len; i++) {
