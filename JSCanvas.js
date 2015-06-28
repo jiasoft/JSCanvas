@@ -424,9 +424,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       }
       return null;
   };
-  
-  //Object.defineProperty(_stage, "child", { get: function () { return _child; } });
-  _stage.__defineGetter__("child",function(){return _child;})
+  Object.defineProperty(_stage, "child", { get: function () { return _child; } });
+ 
   /*精灵组件*/
   var _spirit = jf.Spirit = function(id,cx,cy,w,h,r){
 
@@ -441,13 +440,13 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		this.hide = false;
 		this.canCollision = false;
 		this.loop = true;
-		this.backgroundColor="";
+		this.backgroundColor="rgba(0,0,0,0)";
 		this.borderWidth =0;
-		this.borderColor = "";
+		this.borderColor = "rgba(0,0,0,0)";
 		this.shadowOffsetX = 0;
 		this.shadowOffsetY = 0;
 		this.shadowBlur = 0;
-		this.shadowColor = "";
+		this.shadowColor = "rgba(0,0,0,0)";
 		
 		var _this = this,
 		_textureAtlas,
@@ -488,8 +487,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 				c2d.stroke();
 			
 				
-				if(this.backgroundColor && this.backgroundColor != '')
-					c2d.fill();
+				//if(this.backgroundColor && this.backgroundColor != '')
+				c2d.fill();
 
 				c2d.closePath();
 				c2d.restore();
@@ -620,17 +619,15 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 					_storeEvents.splice(i,1);
 				
 		};
-		this.__defineGetter__("textureFrameCount",function(){return _textureFrameCount;});
-		this.__defineSetter__("textureFrameCount",function(v){_textureFrameCount=v;});
-		this.__defineGetter__("centerX",function(){return _centerX});
-		this.__defineSetter__("centerX",function(v){_centerX = v});
-		this.__defineGetter__("centerY",function(){return _centerY});
-		this.__defineSetter__("centerY",function(v){_centerY = v});
-		this.__defineGetter__("x",function(){return _centerX - this.width/2});
-		this.__defineGetter__("y",function(){return _centerY - this.height/2});
-		this.__defineGetter__("frames",function(){return _frames});
-		this.__defineGetter__("child",function(){return _child});
-		this.__defineGetter__("radius",function(){return _this.width/2});
+		//Object.defineProperty(this, "textureFrameCount", { get: function () { return _textureFrameCount; },set:function(v){_textureFrameCount=v;} });
+		Object.defineProperty(this,"centerX",{get:function(){return _centerX;},set:function(v){_centerX = v}});
+		Object.defineProperty(this,"centerY",{get:function(){return _centerY;},set:function(v){_centerY = v}});
+		Object.defineProperty(this,"x",{get:function(){return _centerX - _this.width/2}});
+		Object.defineProperty(this,"y",{get:function(){return _centerY - _this.height/2}});
+		Object.defineProperty(this,"frames",{get:function(){return _frames}});
+		Object.defineProperty(this,"child",{get:function(){return _child}});
+		Object.defineProperty(this,"radius",{get:function(){return _this.width/2 }});
+		
 		
 		/*执行*/
 		this.addFrame(function(c2d){
