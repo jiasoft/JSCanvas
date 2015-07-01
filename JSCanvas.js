@@ -270,11 +270,12 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
       obj.index = 0;
       _child.push(obj);
   };
-  _stage.remove=function (obj) {
+  _stage.remove=function (spi) {
   	var len = _child.length
       for (var i = 0; i < len; i++) {
-          if (_child[i].id == obj.id)
-              _child.splice(i, 1);
+      	
+        if (_child[i].id == spi.id)
+            _child.splice(i, 1);
       }
   }
   
