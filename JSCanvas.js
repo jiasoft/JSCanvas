@@ -273,9 +273,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   _stage.remove=function (spi) {
   	var len = _child.length
       for (var i = 0; i < len; i++) {
-      	
-        if (_child[i].id == spi.id)
-            _child.splice(i, 1);
+          if (obj == _child[i] || _child[i].id == obj.id)
+              _child.splice(i, 1);
+
       }
   }
   
@@ -432,7 +432,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
   /*精灵组件*/
   var _spirit = jf.Spirit = function(id,cx,cy,w,h,r){
 
-  	this.id = id||Math.floor(Math.random()*10000000);
+  	this.id = id||Math.floor("spi_"+Math.random()*10000000);
 		this.width= w||0;
 		this.height=h||0;
 		this.IsRund = r||false;
@@ -456,8 +456,8 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		_textureImage,
 		_textureFramesLength = 0,
 		_textureFrameIndex = 0,
-		_textureFrameCount = 10,
-		_tmpTextureFrameCount = 0,
+		_textureFrameRate = 10,
+		_tmpTextureFrameRate = 0,
 		_centerX = cx,
 		_centerY = cy,
 		_frames = [],
@@ -523,19 +523,19 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			c2d.closePath();
 			c2d.restore();
 			
-			if(_textureFrameIndex == 0 && _tmpTextureFrameCount == 0)
+			if(_textureFrameIndex == 0 && _tmpTextureFrameRate == 0)
 				_callEvent.call(_storeEvents,{type:'drawtexture.start',spirit:this});
 			
-			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameCount == _tmpTextureFrameCount)
+			if(_textureFrameIndex == (_textureFramesLength -1) && _textureFrameRate == _tmpTextureFrameRate)
 				_callEvent.call(_storeEvents,{type:'drawtexture.end',spirit:this});
 			
-			if(_textureFrameCount == 0)
+			if(_textureFrameRate == 0)
 				_callEvent.call(_storeEvents,{type:'drawtexture.each',spirit:this});
 				
 				
 			/*换帧 */
-			_tmpTextureFrameCount = _tmpTextureFrameCount < _textureFrameCount ? _tmpTextureFrameCount+1:0;
-			if(_tmpTextureFrameCount == _textureFrameCount){
+			_tmpTextureFrameRate = _tmpTextureFrameRate < _textureFrameRate ? _tmpTextureFrameRate+1:0;
+			if(_tmpTextureFrameRate == _textureFrameRate){
 				if(this.loop)
 					_textureFrameIndex = _textureFrameIndex >= (_textureFramesLength - 1)?0:_textureFrameIndex+1;
 				else
@@ -558,7 +558,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			
 			/*换帧*/
 			_movieFrameIndex++;
-			if(_movieFrameIndex >= _movies[_movieIndex].frameCount){
+			if(_movieFrameIndex >= _movies[_movieIndex].frameRate){
 				_movieFrameIndex = 0;
 				if(_this.loop)
 					_movieIndex = _movieIndex < _movies.length-1 ? _movieIndex+1:0;
@@ -581,9 +581,9 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 			_textureImage.src = json.meta.image;
 			_textureFramesLength = json.frames.length;
 		};
-		this.addMovie = function(drawfun,frameCount){
-			frameCount = frameCount||1;
-			_movies.push({draw:drawfun,frameCount:frameCount});
+		this.addMovie = function(drawfun,frameRate){
+			frameRate = frameRate||1;
+			_movies.push({draw:drawfun,frameRate:frameRate});
 		};
 		this.addFrame = function(callback){
 			if(typeof(callback) == 'function'){
@@ -627,7 +627,7 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 					_storeEvents.splice(i,1);
 				
 		};
-		//Object.defineProperty(this, "textureFrameCount", { get: function () { return _textureFrameCount; },set:function(v){_textureFrameCount=v;} });
+		//Object.defineProperty(this, "textureFrameRate", { get: function () { return _textureFrameRate; },set:function(v){_textureFrameRate=v;} });
 		Object.defineProperty(this,"centerX",{get:function(){return _centerX;},set:function(v){_centerX = v}});
 		Object.defineProperty(this,"centerY",{get:function(){return _centerY;},set:function(v){_centerY = v}});
 		Object.defineProperty(this,"x",{get:function(){return _centerX - _this.width/2}});
@@ -645,21 +645,21 @@ var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Can
 		});
   };
   _spirit.prototype = {
-		animates:function(obj,frameCount,callback){
+		animates:function(obj,frameRate,callback){
 			
 			for(var i in obj)
-				this.animate(i,obj[i],frameCount,callback);
+				this.animate(i,obj[i],frameRate,callback);
 		},
-		animate:function(atr,value,frameCount,callback){
-			frameCount = frameCount||20;
+		animate:function(atr,value,frameRate,callback){
+			frameRate = frameRate||20;
 			var _frameIndex = 0;
 			//var step = value >= this[atr]?_defJumpAttrVal[atr]:-_defJumpAttrVal[atr];
-			var step = (value - this[atr])/frameCount;
+			var step = (value - this[atr])/frameRate;
 			var _this = this;
 			var _changatr = function(){
 				_this[atr] +=step;
 				_frameIndex++;
-				if(_frameIndex >= frameCount){
+				if(_frameIndex >= frameRate){
 					
 						_this[atr] = value;
 						_this.removeFrame(_changatr);
