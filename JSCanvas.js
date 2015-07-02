@@ -31,7 +31,7 @@ _textureAtlas=
 */
 
 
-var JF = {version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Canvas game lib',newDate:'20140529',updateDate:'20150624'};
+var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:'Canvas game lib',newDate:'20140529',updateDate:'20150624'};
 
 (function (jf){
 	
