@@ -273,10 +273,14 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
   _stage.remove=function (spi) {
   	var len = _child.length
       for (var i = 0; i < len; i++) {
-          if (obj == _child[i] || _child[i].id == obj.id)
+      		
+          if (spi == _child[i] || _child[i].id == spi.id){
               _child.splice(i, 1);
+          	return true;
+          }
 
       }
+      return false;
   }
   
   _stage.play = function () {
@@ -336,8 +340,8 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
       _child.splice(_child.length, 0, spi);
       _child.splice(i, 1);
   }
-  _stage.createSpirit = function(id,x,y,w,h,r){
-  	var s = new _spirit(id,x,y,w,h,r);
+  _stage.createSpirit = function(x,y,w,h,r){
+  	var s = new _spirit(x,y,w,h,r);
   	this.add(s);
   	return s;
   }
@@ -430,9 +434,9 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
   Object.defineProperty(_stage, "child", { get: function () { return _child; } });
  
   /*精灵组件*/
-  var _spirit = jf.Spirit = function(id,cx,cy,w,h,r){
+  var _spirit = jf.Spirit = function(cx,cy,w,h,r){
 
-  	this.id = id||Math.floor("spi_"+Math.random()*10000000);
+  	this.id = "spi_"+Math.floor(Math.random()*10000000);
 		this.width= w||0;
 		this.height=h||0;
 		this.IsRund = r||false;
@@ -450,6 +454,7 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 		this.shadowOffsetY = 0;
 		this.shadowBlur = 0;
 		this.shadowColor = "";
+		this.name = "";
 		
 		var _this = this,
 		_textureAtlas,

@@ -39,7 +39,7 @@ body{padding:0px;margin:0px;}
 
 	
 	function createCollRound(){
-		var box = JF.stage.createSpirit(null,stagewidth/2,stageheight/2,boxWidth,boxHeight,true);
+		var box = JF.stage.createSpirit(stagewidth/2,stageheight/2,boxWidth,boxHeight,true);
 		box.scaleX = box.scaleY = 0.01;
 		var minRaius = box.radius * (Math.PI * 2 / roundLength / 2 / 2) * 2 - 2;
 		var w = minRaius * 2,h = minRaius * 2;
@@ -49,9 +49,8 @@ body{padding:0px;margin:0px;}
 		}
 		
 		box.animates({scaleX:1,scaleY:1},1500,function(){
-			console.log(box);
+			
 			JF.stage.remove(box);
-			//createCollRound();
 		});
 		!function turn(){
 			box.animates({rotate:-Math.PI*2},1000,function(){
@@ -66,7 +65,7 @@ body{padding:0px;margin:0px;}
 	function createRound(i,w,h,box){
 		x = boxWidth/2 * Math.sin(Math.PI * 2 / roundLength * i );
 		y = boxWidth/2 * Math.sin(Math.PI/2 - Math.PI * 2 / roundLength * i );
-		var m = new JF.Spirit("m_0"+i,x,y,w,h,true);
+		var m = new JF.Spirit(x,y,w,h,true);
 		box.add(m);
 		m.scaleX = 1;
 		m.scaleY = 1;
