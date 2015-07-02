@@ -61,8 +61,11 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
   _storeEvents = [],
   //_defJumpAttrVal = { x: 10, y: 10, alpha: 0.1, rotate: Math.PI / 180, scaleX: 0.1, scaleY: 0.1 },
   _callFrames = function (c2d) {
+  	
   	var len = this.length;
-    for (var i = 0; i < len; i++)
+  	if(!this[0].call)
+  		console.log(this[0]);
+    for (var i = 0; this[i] && i < len; i++)
         this[i].call(null,c2d);
   },
   _callEvent = function (obj) {
@@ -152,7 +155,7 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
           return;
       _c2d.clearRect(0, 0, _stage.width, _stage.height);
 			var len = _child.length
-      for (var i = 0; i < len; i++) {
+      for (var i = 0; i < len && _child[i]; i++) {
           if (_child[i].hide)
               continue;
               
@@ -694,7 +697,7 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 			c2d.globalAlpha = this.alpha;
 			_callFrames.call(this.frames,c2d);
 			var len = this.child.length;
-			for (var i = 0; i < len; i++) {
+			for (var i = 0; i < len && this.child[i]; i++) {
         if (this.child[i].hide)
             continue;
         if (this.child[i])
