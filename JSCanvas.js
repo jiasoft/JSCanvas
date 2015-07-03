@@ -68,11 +68,11 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
     for (var i = 0; this[i] && i < len; i++)
         this[i].call(null,c2d);
   },
-  _callEvent = function (obj) {
+  _callEvent = function (spi) {
       if (this instanceof Array) {
       	var len = this.length;
 	      for (var i = 0; i < len; i++) {
-	          this[i].call(null,obj);
+	          this[i].call(_stage,spi);
 	      }
       }
   },
@@ -176,8 +176,8 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 
               /*圆碰圆*/
               if (_child[i].radius > 0 && _child[j].radius > 0) {
-                  var xw = Math.abs(_child[j].getCX() - _child[i].getCX());
-                  var hy = Math.abs(_child[j].getCY() - _child[i].getCY());
+                  var xw = Math.abs(_child[j].centerX - _child[i].centerX);
+                  var hy = Math.abs(_child[j].centerY - _child[i].centerY);
                   var xy = Math.sqrt(Math.pow(xw, 2) + Math.pow(hy, 2));
                   if (xy <= (_child[j].radius + _child[i].radius))
                       _callEvent.call(_storeEvents, { type: 'collision.cc', colls: [_child[i], _child[j]] });
@@ -193,32 +193,32 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
                   var box = _child[i].radius == 0 ? _child[i] : _child[j];
 
                   /*圆在方上下边*/
-                  if (CircleBox.getCX() >= box.getCX() - box.width / 2 &&
-					 CircleBox.getCX() <= box.getCX() + box.width / 2 &&
-					 CircleBox.getCY() >= (box.getCY() - box.height / 2 - CircleBox.radius) &&
-					 CircleBox.getCY() <= (box.getCY() + box.height / 2 + CircleBox.radius))
+                  if (CircleBox.centerX >= box.centerX - box.width / 2 &&
+					 CircleBox.centerX <= box.centerX + box.width / 2 &&
+					 CircleBox.centerY >= (box.centerY - box.height / 2 - CircleBox.radius) &&
+					 CircleBox.centerY <= (box.centerY + box.height / 2 + CircleBox.radius))
                       _callEvent.call(_storeEvents, { type: 'collision.cf', colls: [_child[i], _child[j]] });
                   /*圆在方的左右边*/
-                  else if (CircleBox.getCY() >= box.getCY() - box.height / 2 &&
-					 CircleBox.getCY() <= box.getCY() + box.height / 2 &&
-					 CircleBox.getCX() >= (box.getCX() - box.width / 2 - CircleBox.radius) &&
-					 CircleBox.getCX() <= (box.getCX() + box.width / 2 + CircleBox.radius))
+                  else if (CircleBox.centerY >= box.centerY - box.height / 2 &&
+					 CircleBox.centerY <= box.centerY + box.height / 2 &&
+					 CircleBox.centerX >= (box.centerX - box.width / 2 - CircleBox.radius) &&
+					 CircleBox.centerX <= (box.centerX + box.width / 2 + CircleBox.radius))
                       _callEvent.call(_storeEvents, { type: 'collision.cf', colls: [_child[i], _child[j]] });
                   /*圆以方的左上角*/
-                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.getCX() - box.getCX() + box.width / 2), 2) +
-								Math.pow(Math.abs(CircleBox.getCY() - box.getCY() + box.height / 2), 2)) <= CircleBox.radius)
+                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.centerX - box.centerX + box.width / 2), 2) +
+								Math.pow(Math.abs(CircleBox.centerY - box.centerY + box.height / 2), 2)) <= CircleBox.radius)
                       _callEvent.call(_storeEvents, { type: 'collision.cf', colls: [_child[i], _child[j]] });
                   /*圆以方的右上角*/
-                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.getCX() - box.getCX() - box.width / 2), 2) +
-								Math.pow(Math.abs(CircleBox.getCY() - box.getCY() + box.height / 2), 2)) <= CircleBox.radius)
+                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.centerX - box.centerX - box.width / 2), 2) +
+								Math.pow(Math.abs(CircleBox.centerY - box.centerY + box.height / 2), 2)) <= CircleBox.radius)
                       this.callEvent.call(_storeEvents, { type: 'collision.cf', colls: [_child[i], _child[j]] });
                   /*圆以方的右下角*/
-                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.getCX() - box.getCX() - box.width / 2), 2) +
-								Math.pow(Math.abs(CircleBox.getCY() - box.getCY() - box.height / 2), 2)) <= CircleBox.radius)
+                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.centerX - box.centerX - box.width / 2), 2) +
+								Math.pow(Math.abs(CircleBox.centerY - box.centerY - box.height / 2), 2)) <= CircleBox.radius)
                       this.callEvent.call(_storeEvents, { type: 'collision.cf', colls: [_child[i], _child[j]] });
                   /*圆以方的左下角*/
-                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.getCX() - box.getCX() + box.width / 2), 2) +
-								Math.pow(Math.abs(CircleBox.getCY() - box.getCY() - box.height / 2), 2)) <= CircleBox.radius)
+                  else if (Math.sqrt(Math.pow(Math.abs(CircleBox.centerX - box.centerX + box.width / 2), 2) +
+								Math.pow(Math.abs(CircleBox.centerY - box.centerY - box.height / 2), 2)) <= CircleBox.radius)
                       _callEvent.call(_storeEvents, { type: 'collision.cf', colls: [_child[i], _child[j]] });
                   /*
                   if(CircleBox.x >= (box.x-box.width/2-CircleBox.radius) &&
@@ -492,15 +492,17 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 				
 				if(this.IsRund){
 			    c2d.arc(0, 0, this.radius, 0, 2 * Math.PI);
-			    c2d.stroke();
+			    if(this.borderColor)
+					    c2d.stroke();
 				} else {
 				    c2d.rect(-this.width/2, -this.height/2, this.width, this.height);
-				    c2d.stroke();
+				    if(this.borderColor)
+					    c2d.stroke();
 				}
 				
 			
 				
-				if(this.backgroundColor && this.backgroundColor != '')
+				if(this.backgroundColor)
 					c2d.fill();
 
 				c2d.closePath();

@@ -26,29 +26,30 @@ body{padding:0px;margin:0px;}
 		
 
 	JF.stage.init("democavs");
-	var fs = JF.stage.createSpirit("fs01",50,30,40,40);
+	
+	var fs = JF.stage.createSpirit(200,300,40,40);
 	fs.setTextureJson(texturefs);
 	fs.textureFrameCount = 20;
 	fs.animates({x:400},100);
-	var turnSpri = JF.stage.createSpirit("trun",120,30,40,40,35);
+	var turnSpri = JF.stage.createSpirit(120,30,40,40,35);
 	turnSpri.setTextureJson(turn);
 	turnSpri.textureFrameCount = 5;
 	
-	var baoSpri = JF.stage.createSpirit("bao",200,30,40,40,35);
+	var baoSpri = JF.stage.createSpirit(200,30,40,40,35);
 	baoSpri.setTextureJson(bao);
 	baoSpri.textureFrameCount = 10;
 	
-	var firPri = JF.stage.createSpirit("fir",250,36,40,40,35);
+	var firPri = JF.stage.createSpirit(250,36,40,40,35);
 	firPri.setTextureJson(fir);
 	firPri.textureFrameCount = 18;
 	
-	var fir_open_spri = JF.stage.createSpirit("fir_open",280,37,40,40,35);
+	var fir_open_spri = JF.stage.createSpirit(280,37,40,40,35);
 	fir_open_spri.setTextureJson(fir_open);
 	fir_open_spri.textureFrameCount = 20;
 	
-	for(var i = 0;i < 50;i++){
-		turnSpri = JF.stage.createSpirit(null,Math.random()*600,Math.random()*150+100,60,60,true);
-		turnSpri.borderColor="red";
+	for(var i = 0;i < 160;i++){
+		turnSpri = JF.stage.createSpirit(Math.random()*600,Math.random()*150+100,60,60,true);
+
 		turnSpri.setTextureJson(turn);
 		turnSpri.textureFrameCount = 8;
 		turnSpri.scaleX = 1;
