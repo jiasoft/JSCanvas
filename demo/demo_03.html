@@ -67,7 +67,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 							empty_xy = [i,j];
 					}
 				}
-				
+				sound_move.play();
 				tar.animates({
 					centerX:table[empty_xy[0]][empty_xy[1]].tar.centerX,
 					centerY:table[empty_xy[0]][empty_xy[1]].tar.centerY
@@ -80,6 +80,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 					if(checkSucc()){
 						JF.stage.add(endBox);
 						endBox.animates({centerX:stageWidth/2,centerY:stageHeight/2,width:stageWidth,height:stageHeight,alpha:1},30);
+						sound_end.play();
 					}
 				});
 				
@@ -189,14 +190,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				switch(e.type){
 					case 'touch.start':
 					case 'mouse.down':
-						if(e.spirit && e.spirit.name == "startbox"){
-								e.spirit.animates({
-									rotate:Math.PI,scaleX:0.1,scaleY:0.1,x:320,y:340
-								},20,function(){
-									JF.stage.remove(e.spirit);
-								});
-								return;
-						}
+						
 						moveSpri = e.spirit;
 						if(e.type == 'mouse.down')
 							startPos = e.pos;
@@ -300,7 +294,10 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 					startBox.animates({width:0,height:0,alpha:0},30,function(){
 						JF.stage.remove(startBox);
 					});
+				}else if(e.type == "drawmovie.each"){
+					sound_sec.play();
 				}
+				
 			});
 			JF.stage.play();
 			
@@ -329,6 +326,9 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				c2d.restore();
 			},5);
 			
+			var sound_sec = new JF.Sound("res/sec.wav");
+			var sound_move =new JF.Sound("res/move.mp3");
+			var sound_end =new JF.Sound("res/end.mp3");
 		}
 		
 	

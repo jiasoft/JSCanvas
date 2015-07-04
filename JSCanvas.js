@@ -587,7 +587,7 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 			if(_movieIndex == (mlen-1) && _movieFrameIndex == _movies[_movieIndex].frameRate-1)
 				_callEvent.call(_storeEvents,{type:'drawmovie.end',spirit:this});
 			
-			if(_movieIndex == 0)
+			if(_movieFrameIndex == 0)
 				_callEvent.call(_storeEvents,{type:'drawmovie.each',spirit:this});
 		};
 		
