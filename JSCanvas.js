@@ -363,16 +363,16 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 
               switch (obj.keyCode) {
                   case 87:
-                      _this.controller.up = true;
+                      _stage.controller.up = true;
                       break;
                   case 83:
-                      _this.controller.down = true;
+                      _stage.controller.down = true;
                       break;
                   case 65:
-                      _this.controller.left = true;
+                      _stage.controller.left = true;
                       break;
                   case 68:
-                      _this.controller.right = true;
+                      _stage.controller.right = true;
                       break;
                   case 74:
                       //_this.controller.jump = true;
@@ -381,22 +381,22 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
           } else if (obj.type == "key.up") {
               switch (obj.keyCode) {
                   case 87:
-                      _this.controller.up = false;
+                      _stage.controller.up = false;
                       break;
                   case 83:
-                      _this.controller.down = false;
+                      _stage.controller.down = false;
                       break;
                   case 65:
-                      _this.controller.left = false;
+                      _stage.controller.left = false;
                       break;
                   case 68:
-                      _this.controller.right = false;
+                      _stage.controller.right = false;
                       break;
                   case 74:
-                      _this.callEvent.call(_storeEvents, { type: 'action.jump', keyCode: 74 });
+                      _stage.callEvent.call(_storeEvents, { type: 'action.jump', keyCode: 74 });
                       break;
                   case 75:
-                      _this.callEvent.call(_storeEvents, { type: 'action.kill', keyCode: 75 });
+                      _stage.callEvent.call(_storeEvents, { type: 'action.kill', keyCode: 75 });
                       break;
               }
           }
@@ -555,8 +555,8 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 			
 		},
 		_drawMovie = function(c2d){
-			
-			if(_movies.length <= 0)
+			var mlen = _movies.length;
+			if(mlen <= 0)
 				return;
 			c2d.save();
 			c2d.beginPath();
@@ -567,14 +567,28 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 			
 			
 			/*换帧*/
-			_movieFrameIndex++;
-			if(_movieFrameIndex >= _movies[_movieIndex].frameRate){
+			if(_movieIndex <= mlen-1 && _movieFrameIndex <= _movies[_movieIndex].frameRate)
+				_movieFrameIndex++;
+				
+			if(_movieFrameIndex > _movies[_movieIndex].frameRate){
+				if(_movieIndex >= mlen-1 && _movieFrameIndex >= _movies[_movieIndex].frameRate && !_this.loop)
+					return;
 				_movieFrameIndex = 0;
-				if(_this.loop)
-					_movieIndex = _movieIndex < _movies.length-1 ? _movieIndex+1:0;
-				else
-					_movieIndex = _movieIndex < _movies.length-1 ? _movieIndex+1:_movies.length - 1;
+					
+				if(_this.loop){
+					_movieIndex = _movieIndex < mlen-1 ? _movieIndex+1:0;
+				}else
+					_movieIndex = _movieIndex < mlen-1 ? _movieIndex+1:mlen - 1;
 			}
+			
+			if(_movieFrameIndex == 0 && _movieIndex == 0)
+				_callEvent.call(_storeEvents,{type:'drawmovie.start',spirit:this});
+			
+			if(_movieIndex == (mlen-1) && _movieFrameIndex == _movies[_movieIndex].frameRate-1)
+				_callEvent.call(_storeEvents,{type:'drawmovie.end',spirit:this});
+			
+			if(_movieIndex == 0)
+				_callEvent.call(_storeEvents,{type:'drawmovie.each',spirit:this});
 		};
 		
 		this.loadTextureJson = function(url){

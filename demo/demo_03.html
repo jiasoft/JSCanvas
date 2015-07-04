@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 <style>
 body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
-#gmagepan{box-shadow:0px 0px 10px -5px #000;margin-top:50px}
+#gmagepan{box-shadow:0px 0px 10px -5px #000;margin-top:50px;cursor:default;}
 
 </style>
 
@@ -20,24 +20,29 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 	<canvas width="300" height="302" id="gmagepan"></canvas>
 	<script type="text/javascript" src="../JSCanvas.js"></script>
 	<script>
-		var stageWidth = 300;
-		var stageHeight = 302;
+		var stageWidth = 300,
+		stageHeight = 302,
+		dwidth = 69,
+		dheight = 69,
+		margin = 5;
 		function initGame(){
 			JF.stage.init("gmagepan");
-			var dwidth = 69;
-			var dheight = 69;
-			var margin = 5;
-			var table = [];
-			var coll = [];
-			var pos;
-			var ob;
+			
+
+			var table = [],
+			coll = [],
+			pos,
+			ob,
+			rows = 4,
+			cols = 4,
+			numar = [];
 			
 			function TBObj(x,y,w,h,r){
 				JF.Spirit.call(this,x,y,w,h,r);
 				this.Text = "";
 				var _this = this;
 				this.addFrame(function(c2d){
-					c2d.fillStyle = 'rgba(15,47,98,0.8)';
+					c2d.fillStyle = 'rgba(169,208,239,0.6)';
 					c2d.font = 'bold 45px 黑体';
 					c2d.fillText(_this.Text,-18,13);
 				});
@@ -66,15 +71,15 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				tar.animates({
 					centerX:table[empty_xy[0]][empty_xy[1]].tar.centerX,
 					centerY:table[empty_xy[0]][empty_xy[1]].tar.centerY
-				},30);
+				},10);
 				table[empty_xy[0]][empty_xy[1]].tar.animates({
 					centerX:tar.centerX,
 					centerY:tar.centerY
-				},30,function(){
+				},10,function(){
 					callback.call();
 					if(checkSucc()){
 						JF.stage.add(endBox);
-						endBox.animates({centerX:stageWidth/2,centerY:stageHeight/2,width:stageWidth,height:stageHeight,alpha:1},30)
+						endBox.animates({centerX:stageWidth/2,centerY:stageHeight/2,width:stageWidth,height:stageHeight,alpha:1},30);
 					}
 				});
 				
@@ -82,23 +87,29 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				table[empty_xy[0]][empty_xy[1]].tar = tar;
 			}
 			function getToMoveTar(type){
-				var empty_xy
+				if([37,38,39,40].indexOf(type) < 0)
+					return;
+				
+				var cx=0,cy=0;
 				for(var i = 0;i < table.length;i++){
 					for(var j = 0;j < table[i].length;j++){
-						if(table[i][j].tar.name == 'empty')
-							empty_xy = [i,j];
+						if(table[i][j].tar.name == 'empty'){
+							cy = table[i][j].tar.centerY;
+							cx = table[i][j].tar.centerX;
+							break;
+						}
 					}
 				}
+				
 				if(type == 37)
-					empty_xy[0] = empty_xy[0] - 1;
-				else if(type = 39)
-					empty_xy[0] = empty_xy[0] + 1;
+					cx += dwidth;
+				else if(type == 39)
+					cx -= dwidth;
 				else if(type == 38)
-					empty_xy[1] = empty_xy[1] - 1;
+					cy += dheight;
 				else if(type == 40)
-					empty_xy[1] = empty_xy[1] + 1;
-					
-				return table[empty_xy[0]]?table[empty_xy[0]][empty_xy[1]]:null;
+					cy -= dheight;
+				return JF.stage.tipSpirit({x:cx,y:cy});
 			}
 			function checkSucc(){
 				var preobj =null;
@@ -131,11 +142,9 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				}
 				return null;
 			}
-			var rows = 4;
-			var cols = 4;
-			var numar = [];
+			
 
-			for(var l = 1;l <= rows*cols;l++)
+			for(var l = 1;l <= rows*cols-1;l++)
 				numar[l-1] = l;
 				
 			for(var i = 0;i < rows;i++){
@@ -151,8 +160,8 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 					}else{
 						ob = new TBObj(pos.x,pos.y,dwidth,dheight);
 						ob.name = 'ob_id_'+i+"_"+j;
-						ob.borderColor="rgba(138,229,245,0.8)";
-						ob.backgroundColor="rgba(138,229,245,0.3)";
+						ob.borderColor="rgba(106,187,234,0.3)";
+						ob.backgroundColor="rgba(106,187,234,0.1)";
 						ob.borderWidth = 1;
 						ob.shadowBlur = 5;
 						ob.shadowOffsetX = 5;
@@ -237,6 +246,8 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 						
 						moveSpri = getToMoveTar(e.keyCode);
 						if(moveSpri){
+							if(moveing)
+								return;
 							moveing = true;
 							ExchangeEmpty(moveSpri,function(){moveing = false});
 						}
@@ -247,54 +258,80 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 			
 			var startBox = new JF.Spirit(stageWidth/2,stageHeight/2,stageWidth-2,stageHeight-2);
 			startBox.name = "startbox";
-			startBox.backgroundColor="rgba(0,0,0,0.3)";
-			startBox.borderColor="rgba(0,0,0,0.8)";
+			startBox.backgroundColor="rgba(1,35,96,0.2)";
+			startBox.borderColor="rgba(1,35,96,0.2)";
 			startBox.alpha = 0.8;
-			
-			startBox.addFrame(function(c2d){
-				c2d.save();
-				c2d.beginPath();
-				c2d.fillStyle = '#fff';
-				c2d.font = 'bold 12px 宋体';
-				c2d.fillText('移动格子，使数字顺序排列',-80,-50);
-				c2d.fillStyle = 'red';
-				c2d.fillText('★只支持智能手机，请用手机浏览器打开',-100,-100);
-				c2d.fillStyle = '#fff';
-				c2d.font = 'bold 30px 宋体';
-				c2d.fillText('点击屏幕开始',-100,20);
-				c2d.closePath();
-				c2d.restore();
-				
-			});
-			
+			startBox.loop = false;
+			startBox.addMovie(function(c2d){
+				c2d.fillStyle = 'rgba(255,255,255,0.8)';
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('移动数字，使数字按升顺排列',-100,-50);
+			},100);
+			startBox.addMovie(function(c2d){
+				c2d.fillStyle = 'rgba(255,255,255,0.8)';
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('移动数字，使数字按升顺排列',-100,-50);
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('3秒后开始',-40,-10);
+				c2d.font = 'bold 50px 黑体';
+				c2d.fillText('3',-10,50);
+			},60);
+			startBox.addMovie(function(c2d){
+				c2d.fillStyle = 'rgba(255,255,255,0.8)';
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('移动数字，使数字按升顺排列',-100,-50);
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('2秒后开始',-40,-10);
+				c2d.font = 'bold 50px 黑体';
+				c2d.fillText('2',-10,50);
+			},60);
+			startBox.addMovie(function(c2d){
+				c2d.fillStyle = 'rgba(255,255,255,0.8)';
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('移动数字，使数字按升顺排列',-100,-50);
+				c2d.font = 'bold 16px 黑体';
+				c2d.fillText('1秒后开始',-40,-10);
+				c2d.font = 'bold 50px 黑体';
+				c2d.fillText('1',-10,50);
+			},60);
 			JF.stage.add(startBox);
+			startBox.on(function(e){
+				if(e.type == "drawmovie.end"){
+					startBox.animates({width:0,height:0,alpha:0},30,function(){
+						JF.stage.remove(startBox);
+					});
+				}
+			});
 			JF.stage.play();
 			
 			var endBox = new JF.Spirit(160,240,0,0);
 			endBox.name="'endbox";
 			endBox.borderWidth = 1;
-			endBox.borderColor = "#fff";
-			endBox.backgroundColor = "#fff";
-			endBox.alpha = 0;
-			endBox.addFrame(function(c2d){
-				c2d.fillStyle = '#000';
-				c2d.font = 'bold 30px 宋体';
-				c2d.fillText('恭喜您通过',70,200);
-			});
-			
+			endBox.borderColor = "rgba(1,35,96,0.5)";
+			endBox.backgroundColor = "rgba(1,35,96,0.2)";
+			endBox.alpha = 1;
+			endBox.addMovie(function(c2d){
+				c2d.save();
+			  c2d.beginPath();
+				c2d.fillStyle = 'rgba(0,153,211,0.8)';
+				c2d.font = 'bold 45px 黑体';
+				c2d.fillText('您胜利了',-90,0);
+				c2d.closePath();
+				c2d.restore();
+			},5);
+			endBox.addMovie(function(c2d){
+				c2d.save();
+			  c2d.beginPath();
+				c2d.fillStyle = 'rgba(241,214,118,0.8)';
+				c2d.font = 'bold 45px 黑体';
+				c2d.fillText('您胜利了',-90,0);
+				c2d.closePath();
+				c2d.restore();
+			},5);
 			
 		}
 		
-		var t = new JF.Spirit();
-		t.Text = "";
-		t.x = 0;
-		t.addFrame(function(c2d){
-			c2d.fillStyle = '#000';
-			c2d.font = 'bold 12px 宋体';
-			c2d.fillText(t.Text,5,12);
-		});
-		
-		JF.stage.add(t);
+	
 		
 		setTimeout(function(){
 			initGame();
