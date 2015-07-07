@@ -1,18 +1,19 @@
 const roundLength = 20;
-var HelloWorldLayer = cc.Layer.extend({
+var BaseLayer = cc.Layer.extend({
     sprite:null,
     ctor:function () {
 
         this._super();
 
         var size = cc.winSize;
-				this.sprite = new cc.Sprite();
+        this.sprite = new cc.Sprite();
         
-        this.createBox();
-        
+        //this.createBox();
+        this.sprite.addChild(new RoundDot());
         
         this.sprite.x = size.width/2;
         this.sprite.y = size.height/2;
+        
         this.addChild(this.sprite);
         return true;
     },
@@ -37,10 +38,10 @@ var HelloWorldLayer = cc.Layer.extend({
 		        	
 		        }
 		  
-						if(box.rotation <= 0)
-							box.rotation = 360;
-							
-						if(box.scale < 1)
+				if(box.rotation <= 0)
+					box.rotation = 360;
+					
+				if(box.scale < 1)
 		        	setTimeout(toScale,30);
 		        else
 		        	_this.sprite.removeChild(box,true);
@@ -98,10 +99,10 @@ var HelloWorldLayer = cc.Layer.extend({
     }
 });
 
-var HelloWorldScene = cc.Scene.extend({
+var FireBoxScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
-        var layer = new HelloWorldLayer();
+        var layer = new BaseLayer();
         this.addChild(layer);
     }
 });
