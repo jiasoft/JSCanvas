@@ -71,6 +71,7 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
   _callEvent = function (spi) {
       if (this instanceof Array) {
       	var len = this.length;
+      	
 	      for (var i = 0; i < len; i++) {
 	          this[i].call(_stage,spi);
 	      }
@@ -570,9 +571,10 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 			if(_movieIndex <= mlen-1 && _movieFrameIndex <= _movies[_movieIndex].frameRate)
 				_movieFrameIndex++;
 				
-			if(_movieFrameIndex > _movies[_movieIndex].frameRate){
+			if(_movieFrameIndex >= _movies[_movieIndex].frameRate){
 				if(_movieIndex >= mlen-1 && _movieFrameIndex >= _movies[_movieIndex].frameRate && !_this.loop)
 					return;
+					
 				_movieFrameIndex = 0;
 					
 				if(_this.loop){
@@ -584,11 +586,14 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
 			if(_movieFrameIndex == 0 && _movieIndex == 0)
 				_callEvent.call(_storeEvents,{type:'drawmovie.start',spirit:this});
 			
-			if(_movieIndex == (mlen-1) && _movieFrameIndex == _movies[_movieIndex].frameRate-1)
+			if(_movieIndex == (mlen-1) && _movieFrameIndex == _movies[_movieIndex].frameRate-1){
+				
 				_callEvent.call(_storeEvents,{type:'drawmovie.end',spirit:this});
+			}
 			
 			if(_movieFrameIndex == 0)
 				_callEvent.call(_storeEvents,{type:'drawmovie.each',spirit:this});
+				
 		};
 		
 		this.loadTextureJson = function(url){
@@ -670,9 +675,15 @@ var JF = JF||{version:1.0,creater:"邱土佳 |18665378372|jiasoft@163.com",name:
   };
   _spirit.prototype = {
 		animates:function(obj,frameRate,callback){
-			
-			for(var i in obj)
-				this.animate(i,obj[i],frameRate,callback);
+			var clen = 0;
+			for(var i in obj){
+				clen ++
+				this.animate(i,obj[i],frameRate,function(){
+					clen --;
+					if(clen == 0 && typeof(callback) === "function")
+						callback.call();
+				});
+			}
 		},
 		animate:function(atr,value,frameRate,callback){
 			frameRate = frameRate||20;
