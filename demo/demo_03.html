@@ -18,7 +18,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 <body>
 
 	<canvas width="300" height="302" id="gmagepan"></canvas>
-	<script type="text/javascript" src="../JSCanvas.js"></script>
+	<script type="text/javascript" src="../dist/jf.js"></script>
 	<script>
 		var stageWidth = 300,
 		stageHeight = 302,
@@ -30,7 +30,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 		var sound_move =new JF.Sound("res/move.mp3");
 		var sound_end =new JF.Sound("res/end.mp3");
 		
-		JF.stage.init("gmagepan");
+		JF.Stage.init("gmagepan");
 		
 		var table = [],
 		coll = [],
@@ -116,7 +116,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				cy += dheight;
 			else if(type == 40)
 				cy -= dheight;
-			return JF.stage.tipSpirit({x:cx,y:cy});
+			return JF.Stage.tipSpirit({x:cx,y:cy});
 		}
 		function checkSucc(){
 			var preobj =null;
@@ -173,7 +173,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 					cy -= dheight;
 				
 				
-				return  JF.stage.tipSpirit({x:cx,y:cy});
+				return  JF.Stage.tipSpirit({x:cx,y:cy});
 				
 		}
 		var _s_random = 3;
@@ -238,7 +238,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 				
 				pos.tar = ob;
 				coll.push(pos);
-				JF.stage.add(ob);
+				JF.Stage.add(ob);
 			}
 			table.push(coll);
 		}
@@ -247,7 +247,7 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 
 		var startPos;
 		var moveing = false;
-		JF.stage.on(function(e){
+		JF.Stage.on(function(e){
 		
 			switch(e.type){
 				case 'touch.start':
@@ -350,13 +350,13 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 			c2d.font = 'bold 50px 黑体';
 			c2d.fillText('1',-10,50);
 		},60);
-		//JF.stage.add(startBox);
+		//JF.Stage.add(startBox);
 		startBox.on(function(e){
 			if(e.type == "drawmovie.end"){
 				
 				startBox.animates({width:0,height:0,alpha:0},30,function(){
 					
-					JF.stage.remove(startBox);
+					JF.Stage.remove(startBox);
 					
 				});
 			}else if(e.type == "drawmovie.each"){
@@ -364,10 +364,10 @@ body{text-align:center;padding:0px;margin:0px;background:url(res/mbo.jpg);}
 			}
 			
 		});
-		JF.stage.play();
+		JF.Stage.play();
 		
 		startMove(function(){
-			JF.stage.add(startBox);
+			JF.Stage.add(startBox);
 		});
 		
 		var endBox = new JF.Spirit(160,240,0,0);

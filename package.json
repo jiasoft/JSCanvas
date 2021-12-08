@@ -1,0 +1,29 @@
+{
+  "name": "jscanvas",
+  "version": "1.0.0",
+  "description": "js canvas lib",
+  "type": "module",
+  "main": "JSCanvas.js",
+  "scripts": {
+    "test": "node jsconvas.js",
+    "build:w": "webpack",
+    "build:r": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiasoft/JSCanvas.git"
+  },
+  "keywords": [
+    "JSCanvas"
+  ],
+  "author": "jiasoft",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jiasoft/JSCanvas/issues"
+  },
+  "homepage": "https://github.com/jiasoft/JSCanvas#readme",
+  "dependencies": {
+    "rollup": "^2.60.2"
+  },
+  "devDependencies": {}
+}

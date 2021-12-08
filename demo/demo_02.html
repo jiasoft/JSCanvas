@@ -16,12 +16,12 @@ body{padding:0px;margin:0px;}
 	<canvas width="600" height="600" id="democavs" style="background:#000;"></canvas>
 	</div>
 	<div id="msg"></div>
-	<script type="text/javascript" src="../JSCanvas.js"></script>
+	<script type="text/javascript" src="../dist/jf.js"></script>
 	<script>
 		
 
-	JF.stage.init("democavs");
-	JF.stage.play();
+	JF.Stage.init("democavs");
+	JF.Stage.play();
 	var
 	stagewidth = 600,
 	stageheight = 600;
@@ -39,7 +39,7 @@ body{padding:0px;margin:0px;}
 
 	
 	function createCollRound(){
-		var box = JF.stage.createSpirit(stagewidth/2,stageheight/2,boxWidth,boxHeight,true);
+		var box = JF.Stage.createSpirit(stagewidth/2,stageheight/2,boxWidth,boxHeight,true);
 		box.scaleX = box.scaleY = 0.01;
 		var minRaius = box.radius * (Math.PI * 2 / roundLength / 2 / 2) * 2 - 2;
 		var w = minRaius * 2,h = minRaius * 2;
@@ -50,7 +50,7 @@ body{padding:0px;margin:0px;}
 		
 		box.animates({scaleX:1,scaleY:1},1500,function(){
 			
-			JF.stage.remove(box);
+			JF.Stage.remove(box);
 		});
 		!function turn(){
 			box.animates({rotate:-Math.PI*2},1000,function(){
