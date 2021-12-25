@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Test</title>
+<meta name="Keywords" content="canvas demo" />
+<meta name="Description" content="canvas demo" />
+<meta name="robots" content="index, follow" />
+<meta name="googlebot" content="index, follow" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<style>
+body{padding: 0px;padding:0;margin: 0px;}
+
+#main{
+   background: url(res/map.bmp);
+}
+
+</style>
+
+</head>
+<body>
+
+	<div style="margin:auto;width:1280px;"><canvas width="1280" height="935" id="main"></canvas></div>
+	<script type="text/javascript" src="../dist/jf.js"></script>
+	<script>
+		var stageWidth = 1280,
+		stageHeight = 935;
+	
+		
+		var sound_sec = new JF.Sound("res/sec.mp3");
+		var sound_move =new JF.Sound("res/move.mp3");
+		var sound_end =new JF.Sound("res/end.mp3");
+		let feijiImg = new Image();
+        feijiImg.src = "res/feiji.png";
+
+		JF.Stage.init("main");
+		JF.Stage.play();
+		
+		
+
+        let start = new JF.Spirit(500,500,30,30);
+        start.addMovie((c2d)=>{
+            c2d.fillStyle = 'rgba(38,163,120, 1)';
+            c2d.arc(0,0,10,0, 2*Math.PI);
+            c2d.fill();
+        },10);
+        start.addMovie((c2d)=>{
+            c2d.fillStyle = 'rgba(38,163,120, 0.7)';
+            c2d.arc(0,0,15,0, 2*Math.PI);
+            c2d.fill();
+        },10)
+        start.addMovie((c2d)=>{
+            c2d.fillStyle = 'rgba(38,163,120, 0.5)';
+            c2d.arc(0,0,20,0, 2*Math.PI);
+            c2d.fill();
+        },10)
+        start.addMovie((c2d)=>{
+            c2d.fillStyle = 'rgba(38,163,120, 0.3)';
+            c2d.arc(0,0,25,0, 2*Math.PI);
+            c2d.fill();
+        },10)
+        start.addMovie((c2d)=>{
+            c2d.fillStyle = 'rgba(38,163,120, 0.1)';
+            c2d.arc(0,0,30,0, 2*Math.PI);
+            c2d.fill();
+        },10)
+        JF.Stage.add(start);
+
+        let feiji = JF.Stage.createSpirit(500,500,50,50);
+        feiji.addMovie((c2d)=>{
+            c2d.drawImage(feijiImg,0,0,512,512,-25,-25,50,50);
+        },60);
+        // JF.Stage.add(feiji);
+        setTimeout(()=>{
+            feiji.animates({
+				centerX:1110,
+				centerY:300
+			},500)
+        },1000)
+        
+        
+	</script>
+	
+</body>
+</html> 
