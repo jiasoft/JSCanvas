@@ -1,35 +1,9 @@
 # JSCanas 是用Canvas实现的一个简单的游戏类库
 
-用Rollor打包
+用rollup打包
 
 demo:
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>demo 01</title>
-<meta name="Keywords" content="canvas demo" />
-<meta name="Description" content="canvas demo" />
-<meta name="robots" content="index, follow" />
-<meta name="googlebot" content="index, follow" />
-<style>
-body{padding:0px;margin:0px;}
-</style>
-</head>
-<body>
-	<div style="width:1000px;margin:auto;">
-	<canvas width="800" height="400" id="democavs" _style="position:fixed;top:20px;left:20px;"></canvas>
-	</div>
-	<div id="msg"></div>
-	<script type="text/javascript" src="../dist/jf.js"></script>
-	<script type="text/javascript" src="res/bao.json"></script>
-	<script type="text/javascript" src="res/fir.json"></script>
-	<script type="text/javascript" src="res/fir_open.json"></script>
-	<script type="text/javascript" src="res/texturefs.json"></script>
-	<script type="text/javascript" src="res/turn.json"></script>
-	<script>
-		
+	
 
 	JF.Stage.init("democavs");
 	
@@ -65,7 +39,3 @@ body{padding:0px;margin:0px;}
 	
 	JF.Stage.play();
 
-
-	</script>
-</body>
-</html>
